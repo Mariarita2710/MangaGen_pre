@@ -48,6 +48,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -56,10 +58,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.polito.giulia.generazionemangav3.AppViewModel
+import com.polito.giulia.generazionemangav3.FindUrl
 import com.polito.giulia.generazionemangav3.database
 import com.polito.giulia.generazionemangav3.ui.theme.Green
 import com.polito.giulia.generazionemangav3.ui.theme.Screen
@@ -83,12 +87,13 @@ fun SearchScreen(navController: NavController,viewModel: AppViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Search(navController: NavController, viewModel: AppViewModel) {
-    var showIconList by remember { mutableStateOf(false) }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.primary)
-        .padding(top = 10.dp)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(top = 10.dp)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -97,67 +102,72 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 50.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 50.dp),
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
-            //horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+            ) {
                 var text by remember { mutableStateOf("") }
                 var active by remember { mutableStateOf(false) }
 
-                    SearchBar(
-                        query = text,
-                        onQueryChange = {
-                            text = it
-                        },
-                        onSearch = {
-                           active=false
-                        },
-                        active = active,
-                        onActiveChange = {
-                            active=it
-                        },
-                        placeholder = {
-                            Text(text = "search...")
-                        },
-                        leadingIcon = {
-                            Icon(imageVector = Icons.Default.Search, contentDescription = "search")
-                        },
-                        trailingIcon = {
-                            if(active){
-                                Icon(
-                                    modifier=Modifier.clickable {
-                                        if(text.isNotEmpty()){
-                                            text=""
-                                        }else{
-                                            active=false
-                                        }
-                                    },
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "close")
-                            }
+                SearchBar(
+                    query = text,
+                    onQueryChange = {
+                        text = it
+                    },
+                    onSearch = {
+                        active = false
+                    },
+                    active = active,
+                    onActiveChange = {
+                        active = it
+                    },
+                    placeholder = {
+                        Text(text = "search...")
+                    },
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Default.Search, contentDescription = "search")
+                    },
+                    trailingIcon = {
+                        if (active) {
+                            Icon(
+                                modifier = Modifier.clickable {
+                                    if (text.isNotEmpty()) {
+                                        text = ""
+                                    } else {
+                                        active = false
+                                    }
+                                },
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "close"
+                            )
                         }
-                    ) {
-                        DisplayIconList(viewModel,text)
                     }
+                ) {
+                    DisplayIconList(viewModel, text)
+                }
+            }
+            /*var mangaListDB by remember { mutableStateOf<List<String>>(emptyList()) }
+            var listaDB = database.child("manga")
+            listaDB.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+                    // Itera sui figli del nodo
+                    var list = mutableListOf<String>()
 
-            /*val (value, onValueChange) = remember { mutableStateOf("") }
+                    for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                        // Aggiungi il prodotto alla lista
+                        list.add(childSnapshot.value.toString())
+                    }
+                    mangaListDB = list
+                }
 
-            TextField(
-                value = value,
-                onValueChange = onValueChange,
-                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
-                leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.Gray) },
-                modifier = Modifier
-                   .padding(top = 80.dp)
-                    .fillMaxWidth()
-                    .background(Color(0xFFE7F1F1), RoundedCornerShape(50.dp)),
-                placeholder = { Text(text = "search") },
-
-                )*/
-        }
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Gestisci gli errori qui
+                    println("Errore nel leggere i dati dal database: ${databaseError.message}")
+                }
+            })
+            */
             Text(
                 text = "Trending",
                 color = MaterialTheme.colorScheme.onPrimary,
@@ -173,6 +183,30 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
 
             ) {
+                /*mangaListDB.forEach { manga ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        val sl = viewModel.mangas.observeAsState(emptyList()).value
+                            .filter { it.child("title").value.toString() == manga }
+                        var url = ""
+                        sl.forEach { s ->
+                            url = FindUrl(fileName = manga + " Cover.jpg")
+                        }
+                        AsyncImage(
+                            model = url,
+                            contentDescription = "Manga banner",
+                            contentScale = ContentScale.FillWidth,
+                            modifier = Modifier
+                                .layoutId("banner")
+                                .fillMaxSize()
+                                .padding(bottom = 200.dp),
+                            alpha = 0.5F
+                        )*/
+                        /*
                 Icon(
                     imageVector = Icons.Filled.AccountBox,
                     modifier = Modifier.size(80.dp),
@@ -197,67 +231,72 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                     imageVector = Icons.Filled.AccountBox,
                     modifier = Modifier.size(80.dp),
                     contentDescription = "manga5"
-                )
-            }
-            Text(
-                text = "Recommeded by the community",
-                color = MaterialTheme.colorScheme.onPrimary,
-                textAlign = TextAlign.Left,
-                fontFamily = fontFamily,
-                fontWeight = FontWeight.Bold
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription = "manga1"
-                )
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription = "manga2"
-                )
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription = "manga3"
-                )
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription = "manga4"
-                )
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription = "manga5"
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(30.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,) {
-                Button(
-                    onClick = {navController.navigate("mangalist_screen") },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
-                    ),
-                ) {
-                    Text(text="See all",
-                        fontSize = 18.sp)
+                )*/
+                    }
+                    Text(
+                        text = "Recommeded by the community",
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        textAlign = TextAlign.Left,
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState()),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.AccountBox,
+                            modifier = Modifier.size(80.dp),
+                            contentDescription = "manga1"
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.AccountBox,
+                            modifier = Modifier.size(80.dp),
+                            contentDescription = "manga2"
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.AccountBox,
+                            modifier = Modifier.size(80.dp),
+                            contentDescription = "manga3"
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.AccountBox,
+                            modifier = Modifier.size(80.dp),
+                            contentDescription = "manga4"
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.AccountBox,
+                            modifier = Modifier.size(80.dp),
+                            contentDescription = "manga5"
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(30.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Button(
+                            onClick = { navController.navigate("mangalist_screen") },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary
+                            ),
+                        ) {
+                            Text(
+                                text = "See all",
+                                fontSize = 18.sp
+                            )
+                        }
+                    }
                 }
             }
         }
-    }
-}
+    //}
+//}
 
 @Composable
 fun DisplayIconList(viewModel: AppViewModel, searchText: String) {
@@ -269,7 +308,25 @@ fun DisplayIconList(viewModel: AppViewModel, searchText: String) {
         "Manga 4"
     )
 
-    val mangaListDB= database.child("manga")
+    //val mangaListDB= database.child("manga")
+    var mangaListDB by remember { mutableStateOf<List<String>>(emptyList()) }
+    var listaDB = database.child("manga")
+    listaDB.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+            // Itera sui figli del nodo
+            var list= mutableListOf<String>()
+
+            for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                // Aggiungi il prodotto alla lista
+                list.add(childSnapshot.value.toString())
+            }
+            mangaListDB=list
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            // Gestisci gli errori qui
+            println("Errore nel leggere i dati dal database: ${databaseError.message}")
+        }
+    })
 
     var favouriteList by remember { mutableStateOf<List<String>>(emptyList()) }
     var favourites = database.child("users").child("1").child("favourites")
@@ -314,35 +371,53 @@ fun DisplayIconList(viewModel: AppViewModel, searchText: String) {
     var man = viewModel.selectedManga
 
     // Filtra la lista dei manga in base al testo di ricerca
-    val filteredMangaList = mangaList.filter { it.contains(searchText, ignoreCase = true) }
+    val filteredMangaList = mangaListDB.filter { it.contains(searchText, ignoreCase = true) }
 
     // Mostra solo i manga che corrispondono al testo di ricerca
+    Column {
+
     filteredMangaList.forEach { manga ->
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState()),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Icon(
+            val sl = viewModel.mangas.observeAsState(emptyList()).value
+                .filter { it.child("title").value.toString() == manga }
+            var url = ""
+            sl.forEach { s ->
+                url = FindUrl(fileName = manga + " Cover.jpg")
+            }
+            AsyncImage(
+                model = url,
+                contentDescription = "Manga banner",
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .layoutId("banner")
+                    .fillMaxSize()
+                    .padding(bottom = 200.dp),
+                alpha = 0.5F
+            )
+            /* Icon(
                 imageVector = Icons.Filled.AccountBox,
                 modifier = Modifier.size(80.dp),
                 contentDescription = "manga1"
-            )
+            )*/
             Text(text = manga)
             // Aggiungi qui i pulsanti o le azioni per i manga
             IconButton(
-                onClick = { filledPlus = !filledPlus
-                    if(filledPlus){
+                onClick = {
+                    filledPlus = !filledPlus
+                    if (filledPlus) {
                         addToShelf(man, "1")
-                    }
-                    else
+                    } else
                         removeFromShelf(man, "1")
                 },
                 colors = IconButtonDefaults.iconButtonColors(
                     contentColor = MaterialTheme.colorScheme.tertiaryContainer
-                )) {
+                )
+            ) {
                 if (filledPlus == false) {
                     Icon(
                         imageVector = Icons.Outlined.AddCircle,
@@ -362,10 +437,9 @@ fun DisplayIconList(viewModel: AppViewModel, searchText: String) {
             IconButton(
                 onClick = {
                     filledHeart = !filledHeart
-                    if(filledHeart){
+                    if (filledHeart) {
                         addToShelf(man, "1")
-                    }
-                    else
+                    } else
                         removeFromShelf(man, "1")
                 },
                 colors = IconButtonDefaults.iconButtonColors(
@@ -389,6 +463,7 @@ fun DisplayIconList(viewModel: AppViewModel, searchText: String) {
                 }
             }
         }
+    }
     }
 }
 

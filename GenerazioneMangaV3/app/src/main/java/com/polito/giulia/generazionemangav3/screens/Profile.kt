@@ -71,7 +71,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.polito.giulia.generazionemangav3.R
+import com.polito.giulia.generazionemangav3.database
 
 
 @Composable
@@ -82,7 +86,7 @@ fun ProfileScreen(navController: NavController, viewModel: AppViewModel) {
             Profile(navController = navController,viewModel)
         }
         composable("edit_screen") {
-            EditProfile(navController = navController)
+            EditProfile(viewModel,navController = navController)
         }
     }
 }
@@ -92,6 +96,63 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
     .padding(top = 74.dp)
     .padding(bottom = 74.dp)){
     val scrollState = rememberScrollState()
+
+    var favouriteGenresList by remember { mutableStateOf<List<String>>(emptyList()) }
+    var favouritesGenres = database.child("users").child("1").child("favourites")
+    favouritesGenres.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+            // Itera sui figli del nodo
+            var list= mutableListOf<String>()
+
+            for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                // Aggiungi il prodotto alla lista
+                list.add(childSnapshot.value.toString())
+            }
+            favouriteGenresList=list
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            // Gestisci gli errori qui
+            println("Errore nel leggere i dati dal database: ${databaseError.message}")
+        }
+    })
+
+    var favouritesAuthorsList by remember { mutableStateOf<List<String>>(emptyList()) }
+    var favouritesAuthors= database.child("users").child("1").child("favourites")
+    favouritesAuthors.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+            // Itera sui figli del nodo
+            var list= mutableListOf<String>()
+
+            for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                // Aggiungi il prodotto alla lista
+                list.add(childSnapshot.value.toString())
+            }
+            favouritesAuthorsList=list
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            // Gestisci gli errori qui
+            println("Errore nel leggere i dati dal database: ${databaseError.message}")
+        }
+    })
+
+    var favouritesEditorsList by remember { mutableStateOf<List<String>>(emptyList()) }
+    var favouritesEditors= database.child("users").child("1").child("favourites")
+    favouritesEditors.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+            // Itera sui figli del nodo
+            var list= mutableListOf<String>()
+
+            for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                // Aggiungi il prodotto alla lista
+                list.add(childSnapshot.value.toString())
+            }
+            favouritesEditorsList=list
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            // Gestisci gli errori qui
+            println("Errore nel leggere i dati dal database: ${databaseError.message}")
+        }
+    })
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -114,7 +175,7 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                     verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
                     Text(
-                        text = " Favourite genres: " + " shonen",//dopo il più in teoria ci andrebbe tipo una funzione
+                        text = " Favourite genres: " + favouritesGenres,//dopo il più in teoria ci andrebbe tipo una funzione
                         //che fa cambiare il testo a seconda delle cose che vengono scelte quando si fa edit prof
                         //quindi da aggiungere in post
                         color = MaterialTheme.colorScheme.onPrimary,
@@ -249,8 +310,12 @@ fun ProfileHeader(navController: NavController) {
 }
 
 @Composable
-fun EditProfile(navController: NavController) {
+fun EditProfile(viewModel: AppViewModel, navController: NavController) {
     var selectedLanguage = remember { mutableStateOf<Lang?>(null) }
+    var genre1="drama"
+    var genre2="shonen"
+    var genre3="action"
+
 
     Box(
         modifier = Modifier
@@ -297,28 +362,28 @@ fun EditProfile(navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = {/*TODO*/ },
+                    onClick = { addToGenres(genre1,"1") },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary
                     ),
                 ) {
-                    Text("drama")
+                    Text(genre1)
                 }
                 Button(
-                    onClick = {/*TODO*/ },
+                    onClick = {addToGenres(genre2,"1" )},
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary
                     ),
                 ) {
-                    Text("action")
+                    Text(genre2)
                 }
                 Button(
-                    onClick = {/*TODO*/ },
+                    onClick = {addToGenres(genre3,"1") },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary
                     ),
                 ) {
-                    Text("shonen")
+                    Text(genre3)
                 }
             }
             Text(
@@ -383,12 +448,12 @@ fun EditProfile(navController: NavController) {
                     Text("panini")
                 }
                 Button(
-                    onClick = {/*TODO*/ },
+                    onClick = { },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary
                     ),
                 ) {
-                    Text("dynit")
+                    Text(text="dynit")
                 }
             }
             Text(
