@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "754256544833",
+    "project_id": "generazionemangav3",
+    "storage_bucket": "generazionemangav3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:754256544833:android:78cc5e9849c36e537eb2c0",
+        "android_client_info": {
+          "package_name": "com.polito.giulia.generazionemangav3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGT6aikFIv8B1tARlpJCjXsKfXw4P1yYE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
