@@ -54,6 +54,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -202,13 +203,17 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState()),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(5.dp)
 
             ) {
                 filteredList(section = "trending", viewModel = viewModel)?.forEach { p ->
                     val fileName=p.child("title").value.toString()+" Cover.jpg"
                     val url= FindUrl(fileName = fileName)
+                    Column(
+                        verticalArrangement = Arrangement.Bottom,
+                        horizontalAlignment = Alignment.Start
+                    ){
                         Card(onClick = { viewModel.selectedManga=p.child("title").value.toString();
                             navController.navigate(Screen.Calendar.route)},
                             modifier=Modifier.size(100.dp, 140.dp)) {
@@ -217,6 +222,17 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                                 contentDescription = "Manga cover",
                                 contentScale = ContentScale.Crop
                             )
+                        }
+                            Text(
+                                text = p.child("title").value.toString(),
+                                fontSize = 10.sp,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                textAlign = TextAlign.Center,
+                                fontFamily = fontFamily,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.width(100.dp)
+                            )
+
                         }
                 }
                 /*mangaListDB.forEach { manga ->
@@ -288,15 +304,29 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                 filteredList(section = "recommended", viewModel = viewModel)?.forEach { p ->
                     val fileName=p.child("title").value.toString()+" Cover.jpg"
                     val url= FindUrl(fileName = fileName)
-                    Card(onClick = { viewModel.selectedManga=p.child("title").value.toString();
-                        navController.navigate(Screen.Calendar.route)},
-                        modifier=Modifier.size(100.dp, 140.dp)) {
-                        AsyncImage(
-                            model = url,
-                            contentDescription = "Manga cover",
-                            contentScale = ContentScale.Crop
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ){
+                        Card(onClick = { viewModel.selectedManga=p.child("title").value.toString();
+                            navController.navigate(Screen.Calendar.route)},
+                            modifier=Modifier.size(100.dp, 140.dp)) {
+                            AsyncImage(
+                                model = url,
+                                contentDescription = "Manga cover",
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Text(
+                            text = p.child("title").value.toString(),
+                            fontSize = 10.sp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            textAlign = TextAlign.Center,
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
+
                 }
                     }
                     Row(
