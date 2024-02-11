@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -80,6 +82,9 @@ fun SearchScreen(navController: NavController,viewModel: AppViewModel) {
         }
         composable("mangalist_screen") {
             DisplayListOnClick(navController = navController)
+        }
+        composable(route = Screen.Calendar.route) {
+            MangaPageScreen(viewModel)
         }
     }
 }
@@ -148,9 +153,27 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                     DisplayIconList(viewModel, text)
                 }
             }
-            /*var mangaListDB by remember { mutableStateOf<List<String>>(emptyList()) }
+            var mangaListDB by remember { mutableStateOf<List<String>>(emptyList()) }
             var listaDB = database.child("manga")
-            listaDB.addValueEventListener(object : ValueEventListener {
+
+
+            val children= database.child("manga")
+            children.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                    for (childSnapshot in dataSnapshot.children) {
+                        viewModel.addManga(childSnapshot)
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    println("Errore nel leggere i dati dal database: ${databaseError.message}")
+                }
+            })
+
+            val man by viewModel.mangas.observeAsState()
+
+            /*listaDB.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
                     // Itera sui figli del nodo
                     var list = mutableListOf<String>()
@@ -180,9 +203,22 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState()),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
 
             ) {
+                filteredList(section = "trending", viewModel = viewModel)?.forEach { p ->
+                    val fileName=p.child("title").value.toString()+" Cover.jpg"
+                    val url= FindUrl(fileName = fileName)
+                        Card(onClick = { viewModel.selectedManga=p.child("title").value.toString();
+                            navController.navigate(Screen.Calendar.route)},
+                            modifier=Modifier.size(100.dp, 140.dp)) {
+                            AsyncImage(
+                                model = url,
+                                contentDescription = "Manga cover",
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                }
                 /*mangaListDB.forEach { manga ->
                     Row(
                         modifier = Modifier
@@ -240,38 +276,27 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                         fontFamily = fontFamily,
                         fontWeight = FontWeight.Bold
                     )
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .horizontalScroll(rememberScrollState()),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.AccountBox,
-                            modifier = Modifier.size(80.dp),
-                            contentDescription = "manga1"
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+
+            ) {
+                filteredList(section = "recommended", viewModel = viewModel)?.forEach { p ->
+                    val fileName=p.child("title").value.toString()+" Cover.jpg"
+                    val url= FindUrl(fileName = fileName)
+                    Card(onClick = { viewModel.selectedManga=p.child("title").value.toString();
+                        navController.navigate(Screen.Calendar.route)},
+                        modifier=Modifier.size(100.dp, 140.dp)) {
+                        AsyncImage(
+                            model = url,
+                            contentDescription = "Manga cover",
+                            contentScale = ContentScale.Crop
                         )
-                        Icon(
-                            imageVector = Icons.Filled.AccountBox,
-                            modifier = Modifier.size(80.dp),
-                            contentDescription = "manga2"
-                        )
-                        Icon(
-                            imageVector = Icons.Filled.AccountBox,
-                            modifier = Modifier.size(80.dp),
-                            contentDescription = "manga3"
-                        )
-                        Icon(
-                            imageVector = Icons.Filled.AccountBox,
-                            modifier = Modifier.size(80.dp),
-                            contentDescription = "manga4"
-                        )
-                        Icon(
-                            imageVector = Icons.Filled.AccountBox,
-                            modifier = Modifier.size(80.dp),
-                            contentDescription = "manga5"
-                        )
+                    }
+                }
                     }
                     Row(
                         modifier = Modifier
@@ -798,4 +823,8 @@ fun DisplayListOnClick(navController: NavController) {
         }
     }
 }
-
+@Composable
+fun filteredList(section: String, viewModel: AppViewModel): List<DataSnapshot>{
+    return viewModel.mangas.observeAsState(emptyList()).value
+        .filter { it.child("section").value.toString() == section }
+}

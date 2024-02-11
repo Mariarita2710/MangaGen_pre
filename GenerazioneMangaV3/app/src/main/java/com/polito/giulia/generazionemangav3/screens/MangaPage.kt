@@ -1,5 +1,6 @@
 package com.polito.giulia.generazionemangav3.screens
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
@@ -117,10 +118,10 @@ fun MangaPageScreen(viewModel: AppViewModel){
     }
 }
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
-
     var man = viewModel.selectedManga
 
     val sl= viewModel.mangas.observeAsState(emptyList()).value
@@ -371,12 +372,8 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
         var filledHeart by remember { mutableStateOf(false) }
         var filledPlus by  remember { mutableStateOf(false) }
 
-             if(favouriteList.contains(man)){
-                filledHeart=true
-            }
-            else
-                filledHeart=false
-
+        filledHeart = favouriteList.contains(man)
+        filledPlus = shelfList.contains(man)
                 Column(
                     //verticalArrangement = Arrangement.Top,
                     modifier = Modifier
