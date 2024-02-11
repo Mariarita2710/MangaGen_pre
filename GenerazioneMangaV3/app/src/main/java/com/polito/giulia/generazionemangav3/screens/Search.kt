@@ -268,6 +268,7 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                     modifier = Modifier.size(80.dp),
                     contentDescription = "manga5"
                 )*/
+
                     }
                     Text(
                         text = "Recommeded by the community",
