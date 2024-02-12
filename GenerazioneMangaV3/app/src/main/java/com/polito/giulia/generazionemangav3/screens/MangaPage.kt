@@ -372,8 +372,15 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
         var filledHeart by remember { mutableStateOf(false) }
         var filledPlus by  remember { mutableStateOf(false) }
 
-        filledHeart = favouriteList.contains(man)
+        //filledHeart = favouriteList.contains(man)
         filledPlus = shelfList.contains(man)
+
+        if(shelfList.contains(man)){
+            filledHeart
+        }else{
+            !filledHeart
+        }
+
                 Column(
                     //verticalArrangement = Arrangement.Top,
                     modifier = Modifier
@@ -823,7 +830,7 @@ fun removeFromShelf(manga: String, id: String) {
 
 fun addToGenres(genre: String, id: String){
 
-    var favourites= database.child("users").child(id).child("favourites")
+    var favourites= database.child("users").child(id).child("genres")
     favourites.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
             var lastKey = 0
@@ -834,11 +841,11 @@ fun addToGenres(genre: String, id: String){
                     lastKey= i+1
                     println("LastKey: "+lastKey)
                 }
-                database.child("users").child(id).child("favourites").child(lastKey.toString()).setValue(genre)
+                database.child("users").child(id).child("genres").child(lastKey.toString()).setValue(genre)
             }
             else{
                 val favouriteMap = mapOf(lastKey.toString() to genre)
-                database.child("users").child(id).child("favourites").setValue(favouriteMap)
+                database.child("users").child(id).child("genres").setValue(favouriteMap)
             }
         }
         override fun onCancelled(databaseError: DatabaseError) {

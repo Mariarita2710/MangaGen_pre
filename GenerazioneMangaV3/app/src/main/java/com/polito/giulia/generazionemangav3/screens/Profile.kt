@@ -101,11 +101,12 @@ fun ProfileScreen(navController: NavController, viewModel: AppViewModel) {
 @Composable
 fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modifier = Modifier
     .padding(top = 74.dp)
-    .padding(bottom = 74.dp)){
+    .padding(bottom = 74.dp)
+    .verticalScroll(rememberScrollState())){
     val scrollState = rememberScrollState()
 
     var favouriteGenresList by remember { mutableStateOf<List<String>>(emptyList()) }
-    var favouritesGenres = database.child("users").child("1").child("favourites")
+    var favouritesGenres = database.child("users").child("1").child("genres")
     favouritesGenres.addValueEventListener(object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
             // Itera sui figli del nodo
@@ -124,7 +125,7 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
     })
 
     var favouritesAuthorsList by remember { mutableStateOf<List<String>>(emptyList()) }
-    var favouritesAuthors= database.child("users").child("1").child("favourites")
+    var favouritesAuthors= database.child("users").child("1").child("authors")
     favouritesAuthors.addValueEventListener(object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
             // Itera sui figli del nodo
@@ -143,7 +144,7 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
     })
 
     var favouritesEditorsList by remember { mutableStateOf<List<String>>(emptyList()) }
-    var favouritesEditors= database.child("users").child("1").child("favourites")
+    var favouritesEditors= database.child("users").child("1").child("publishers")
     favouritesEditors.addValueEventListener(object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
             // Itera sui figli del nodo
@@ -164,12 +165,12 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
     Box(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.primary)
-        .padding(top = 70.dp)) {
+        .padding(top = 70.dp)
+        .verticalScroll(rememberScrollState())) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(16.dp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -181,19 +182,28 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
             ) {
 
                     Text(
-                        text = " Favourite genres: " + favouritesGenres,//dopo il più in teoria ci andrebbe tipo una funzione
+                        text = " Favourite genres: " + favouriteGenresList,//dopo il più in teoria ci andrebbe tipo una funzione
                         //che fa cambiare il testo a seconda delle cose che vengono scelte quando si fa edit prof
                         //quindi da aggiungere in post
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontFamily = fontFamily
                     )
+
+               /* favouriteGenresList.forEach{ g ->
                     Text(
-                        text = " Favourite authors: " + " isayama",
+                        text = g,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontFamily = fontFamily,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }*/
+                    Text(
+                        text = " Favourite authors: " + favouritesAuthorsList,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontFamily = fontFamily
                     )
                     Text(
-                        text = " Favourite editors: " + " jpop",
+                        text = " Favourite publishers: " + favouritesEditorsList,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontFamily = fontFamily
                     )
@@ -225,18 +235,38 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState()),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
 
             ) {
-                filteredList(section = "trending", viewModel = viewModel)?.forEach { p ->
-                    val fileName=p.child("title").value.toString()+" Cover.jpg"
+
+                var favouriteList by remember { mutableStateOf<List<String>>(emptyList()) }
+                var favourites = database.child("users").child("1").child("favourites")
+                favourites.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+                        // Itera sui figli del nodo
+                        var list= mutableListOf<String>()
+
+                        for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                            // Aggiungi il prodotto alla lista
+                            list.add(childSnapshot.value.toString())
+                        }
+                        favouriteList=list
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // Gestisci gli errori qui
+                        println("Errore nel leggere i dati dal database: ${databaseError.message}")
+                    }
+                })
+
+                favouriteList?.forEach { p ->
+                    val fileName=p +" Cover.jpg"
                     val url= FindUrl(fileName = fileName)
                     Column(
                         verticalArrangement = Arrangement.Bottom,
                         horizontalAlignment = Alignment.Start
                     ){
-                        Card(onClick = { viewModel.selectedManga=p.child("title").value.toString();
+                        Card(onClick = { viewModel.selectedManga=p;
                             navController.navigate(Screen.Calendar.route)},
                             modifier=Modifier.size(100.dp, 140.dp)) {
                             AsyncImage(
@@ -246,7 +276,7 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                             )
                         }
                         Text(
-                            text = p.child("title").value.toString(),
+                            text = p,
                             fontSize = 10.sp,
                             color = MaterialTheme.colorScheme.onPrimary,
                             textAlign = TextAlign.Center,
@@ -269,17 +299,37 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState()),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                filteredList(section = "trending", viewModel = viewModel)?.forEach { p ->
-                    val fileName=p.child("title").value.toString()+" Cover.jpg"
+
+                var shelfList by remember { mutableStateOf<List<String>>(emptyList()) }
+                var shelf= database.child("users").child("1").child("favourites")
+                shelf.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+                        // Itera sui figli del nodo
+                        var list= mutableListOf<String>()
+
+                        for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                            // Aggiungi il prodotto alla lista
+                            list.add(childSnapshot.value.toString())
+                        }
+                        shelfList=list
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // Gestisci gli errori qui
+                        println("Errore nel leggere i dati dal database: ${databaseError.message}")
+                    }
+                })
+
+                shelfList?.forEach { p ->
+                    val fileName=p+" Cover.jpg"
                     val url= FindUrl(fileName = fileName)
                     Column(
                         verticalArrangement = Arrangement.Bottom,
                         horizontalAlignment = Alignment.Start
                     ){
-                        Card(onClick = { viewModel.selectedManga=p.child("title").value.toString();
+                        Card(onClick = { viewModel.selectedManga=p;
                             navController.navigate(Screen.Calendar.route)},
                             modifier=Modifier.size(100.dp, 140.dp)) {
                             AsyncImage(
@@ -289,7 +339,7 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                             )
                         }
                         Text(
-                            text = p.child("title").value.toString(),
+                            text = p,
                             fontSize = 10.sp,
                             color = MaterialTheme.colorScheme.onPrimary,
                             textAlign = TextAlign.Center,
@@ -341,9 +391,9 @@ fun ProfileHeader(navController: NavController) {
 @Composable
 fun EditProfile(viewModel: AppViewModel, navController: NavController) {
     var selectedLanguage = remember { mutableStateOf<Lang?>(null) }
-    var genre1="drama"
-    var genre2="shonen"
-    var genre3="action"
+    var genre1="Drama"
+    var genre2="Shonen"
+    var genre3="Action"
 
 
     Box(
@@ -538,3 +588,4 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
         }
     }
 }
+
