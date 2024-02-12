@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 //import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
@@ -67,13 +68,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.polito.giulia.generazionemangav3.ui.theme.Screen
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import coil.compose.AsyncImage
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.polito.giulia.generazionemangav3.FindUrl
 import com.polito.giulia.generazionemangav3.R
 import com.polito.giulia.generazionemangav3.database
 
@@ -161,7 +165,8 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -171,9 +176,7 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                 .padding(top = 20.dp),
                 colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary)
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
+
                     Text(
                         text = " Favourite genres: " + favouritesGenres,//dopo il più in teoria ci andrebbe tipo una funzione
                         //che fa cambiare il testo a seconda delle cose che vengono scelte quando si fa edit prof
@@ -191,8 +194,23 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontFamily = fontFamily
                     )
-                }
+
             }
+            val children= database.child("manga")
+            children.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                    for (childSnapshot in dataSnapshot.children) {
+                        viewModel.addManga(childSnapshot)
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    println("Errore nel leggere i dati dal database: ${databaseError.message}")
+                }
+            })
+
+            val man by viewModel.mangas.observeAsState()
             Text(
                 text = "My Favorites",
                 color = MaterialTheme.colorScheme.onPrimary,
@@ -208,30 +226,34 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
 
             ) {
-                /*Button(
-                    onClick = { *//*TODO*//* },
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
-                    ),
-                ) {
-                    Text("+")
-                }*/
-                Icon(imageVector = Icons.Filled.AccountBox ,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription ="manga1" )
-                Icon(imageVector = Icons.Filled.AccountBox ,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription ="manga2" )
-                Icon(imageVector = Icons.Filled.AccountBox ,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription ="manga3" )
-                Icon(imageVector = Icons.Filled.AccountBox ,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription ="manga4" )
-                Icon(imageVector = Icons.Filled.AccountBox ,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription ="manga5" )
+                filteredList(section = "trending", viewModel = viewModel)?.forEach { p ->
+                    val fileName=p.child("title").value.toString()+" Cover.jpg"
+                    val url= FindUrl(fileName = fileName)
+                    Column(
+                        verticalArrangement = Arrangement.Bottom,
+                        horizontalAlignment = Alignment.Start
+                    ){
+                        Card(onClick = { viewModel.selectedManga=p.child("title").value.toString();
+                            navController.navigate(Screen.Calendar.route)},
+                            modifier=Modifier.size(100.dp, 140.dp)) {
+                            AsyncImage(
+                                model = url,
+                                contentDescription = "Manga cover",
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Text(
+                            text = p.child("title").value.toString(),
+                            fontSize = 10.sp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            textAlign = TextAlign.Center,
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.width(100.dp)
+                        )
+
+                    }
+                }
             }
             Text(
                 text = "My Shelf",
@@ -247,30 +269,34 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                /*Button(
-                    onClick = { *//*TODO*//* },
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
-                    ),
-                ) {
-                    Text("+")
-                }*/
-                Icon(imageVector = Icons.Filled.AccountBox ,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription ="manga1" )
-                Icon(imageVector = Icons.Filled.AccountBox ,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription ="manga2" )
-                Icon(imageVector = Icons.Filled.AccountBox ,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription ="manga3" )
-                Icon(imageVector = Icons.Filled.AccountBox ,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription ="manga4" )
-                Icon(imageVector = Icons.Filled.AccountBox ,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription ="manga5" )
+                filteredList(section = "trending", viewModel = viewModel)?.forEach { p ->
+                    val fileName=p.child("title").value.toString()+" Cover.jpg"
+                    val url= FindUrl(fileName = fileName)
+                    Column(
+                        verticalArrangement = Arrangement.Bottom,
+                        horizontalAlignment = Alignment.Start
+                    ){
+                        Card(onClick = { viewModel.selectedManga=p.child("title").value.toString();
+                            navController.navigate(Screen.Calendar.route)},
+                            modifier=Modifier.size(100.dp, 140.dp)) {
+                            AsyncImage(
+                                model = url,
+                                contentDescription = "Manga cover",
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Text(
+                            text = p.child("title").value.toString(),
+                            fontSize = 10.sp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            textAlign = TextAlign.Center,
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.width(100.dp)
+                        )
+
+                    }
+                }
             }
         }
     }

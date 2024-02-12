@@ -173,25 +173,6 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
             })
 
             val man by viewModel.mangas.observeAsState()
-
-            /*listaDB.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
-                    // Itera sui figli del nodo
-                    var list = mutableListOf<String>()
-
-                    for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
-                        // Aggiungi il prodotto alla lista
-                        list.add(childSnapshot.value.toString())
-                    }
-                    mangaListDB = list
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    // Gestisci gli errori qui
-                    println("Errore nel leggere i dati dal database: ${databaseError.message}")
-                }
-            })
-            */
             Text(
                 text = "Trending",
                 color = MaterialTheme.colorScheme.onPrimary,
@@ -235,56 +216,6 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
 
                         }
                 }
-                /*mangaListDB.forEach { manga ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        val sl = viewModel.mangas.observeAsState(emptyList()).value
-                            .filter { it.child("title").value.toString() == manga }
-                        var url = ""
-                        sl.forEach { s ->
-                            url = FindUrl(fileName = manga + " Cover.jpg")
-                        }
-                        AsyncImage(
-                            model = url,
-                            contentDescription = "Manga banner",
-                            contentScale = ContentScale.FillWidth,
-                            modifier = Modifier
-                                .layoutId("banner")
-                                .fillMaxSize()
-                                .padding(bottom = 200.dp),
-                            alpha = 0.5F
-                        )*/
-                        /*
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription = "manga1"
-                )
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription = "manga2"
-                )
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription = "manga3"
-                )
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription = "manga4"
-                )
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    modifier = Modifier.size(80.dp),
-                    contentDescription = "manga5"
-                )*/
-
                     }
                     Text(
                         text = "Recommeded by the community",
@@ -332,7 +263,7 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(30.dp),
+                            .padding(5.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
                     ) {
