@@ -295,7 +295,7 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
             ) {
 
                 var shelfList by remember { mutableStateOf<List<String>>(emptyList()) }
-                var shelf= database.child("users").child("1").child("favourites")
+                var shelf= database.child("users").child("1").child("shelf")
                 shelf.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
                         // Itera sui figli del nodo

@@ -45,7 +45,7 @@ var database = Firebase.database("https://generazionemangav3-default-rtdb.fireba
 
 
 class AppViewModel: ViewModel() {
-    var selectedManga = "Solo Leveling"
+    var selectedManga = "Death Note"
     var mangas= MutableLiveData<List<DataSnapshot>>(emptyList())
     fun addManga(man: DataSnapshot){
         val mangaName = man.value.toString()

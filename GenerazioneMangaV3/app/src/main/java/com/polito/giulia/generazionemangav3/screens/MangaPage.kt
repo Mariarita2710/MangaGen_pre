@@ -350,7 +350,7 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
 
         //SHELF
         var shelfList by remember { mutableStateOf<List<String>>(emptyList()) }
-        var shelf= database.child("users").child("1").child("favourites")
+        var shelf= database.child("users").child("1").child("shelf")
         shelf.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
                 // Itera sui figli del nodo
@@ -373,12 +373,16 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
         var filledPlus by  remember { mutableStateOf(false) }
 
         //filledHeart = favouriteList.contains(man)
-        filledPlus = shelfList.contains(man)
-
+        //filledPlus = shelfList.contains(man)
         if(shelfList.contains(man)){
-            filledHeart
+            filledPlus=true
         }else{
-            !filledHeart
+            filledPlus=false
+        }
+        if(favouriteList.contains(man)){
+            filledHeart=true
+        }else{
+            filledHeart=false
         }
 
                 Column(
@@ -401,7 +405,8 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                 }
                 Row(modifier = Modifier
                     .layoutId("btnHeart")
-                    .padding(top = 32.dp, start = 320.dp, bottom = 8.dp, end = 16.dp),){
+                    .padding(top = 32.dp, start = 320.dp, bottom = 8.dp, end = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween){
 
                     IconButton(
                         onClick = {
@@ -409,8 +414,9 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                             if(filledPlus){
                             addToShelf(man, "1")
                         }
-                        else
-                            removeFromShelf(man, "1")
+                        else {
+                                removeFromShelf(man, "1")
+                            }
                         },
                         colors = IconButtonDefaults.iconButtonColors(
                             contentColor = MaterialTheme.colorScheme.tertiaryContainer
