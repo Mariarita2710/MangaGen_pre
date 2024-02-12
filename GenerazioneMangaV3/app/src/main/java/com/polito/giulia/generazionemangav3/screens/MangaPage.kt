@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.AddCircle
@@ -161,6 +162,11 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                         bgCard: {
                           bottom: ['parent', 'bottom']
                         },
+                        arrowBack: {
+                          top: ['mangaTitle','top'],
+                          bottom: ['bgCard', 'top'],
+                          left: ['parent', 'top']
+                        },
                         mangaTitle: {
                           top: ['bgCard', 'top'],
                           bottom: ['bgCard', 'top'],
@@ -189,7 +195,6 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
             )
             //.background(MaterialTheme.colorScheme.primary)
     ) {
-
         AsyncImage(
             model=url,
             contentDescription = "Manga banner",
@@ -200,6 +205,19 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                 .padding(bottom = 200.dp),
             alpha = 0.5F
         )
+        IconButton(
+            modifier = Modifier
+                .layoutId("arrowBack"),
+            onClick = {
+                navController.navigateUp()
+            },
+            colors = IconButtonDefaults.iconButtonColors(contentColor = androidx.compose.material3.MaterialTheme.colorScheme.tertiary)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back"
+            )
+        }
 /*
         Image(
             painter = painterResource(id = R.drawable.solo_leveling_banner),

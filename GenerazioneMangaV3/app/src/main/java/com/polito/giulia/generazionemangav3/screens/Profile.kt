@@ -92,7 +92,7 @@ fun ProfileScreen(navController: NavController, viewModel: AppViewModel) {
         composable("edit_screen") {
             EditProfile(viewModel,navController = navController)
         }
-        composable(route = Screen.Calendar.route) {
+        composable(route = Screen.MangaPage.route) {
             MangaPageScreen(viewModel)
         }
     }
@@ -258,7 +258,7 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                         horizontalAlignment = Alignment.Start
                     ){
                         Card(onClick = { viewModel.selectedManga=p;
-                            navController.navigate(Screen.Calendar.route)},
+                            navController.navigate(Screen.MangaPage.route)},
                             modifier=Modifier.size(100.dp, 140.dp)) {
                             AsyncImage(
                                 model = url,
@@ -321,7 +321,7 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                         horizontalAlignment = Alignment.Start
                     ){
                         Card(onClick = { viewModel.selectedManga=p;
-                            navController.navigate(Screen.Calendar.route)},
+                            navController.navigate(Screen.MangaPage.route)},
                             modifier=Modifier.size(100.dp, 140.dp)) {
                             AsyncImage(
                                 model = url,

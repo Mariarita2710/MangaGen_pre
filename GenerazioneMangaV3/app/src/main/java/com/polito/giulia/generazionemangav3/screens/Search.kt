@@ -84,7 +84,7 @@ fun SearchScreen(navController: NavController,viewModel: AppViewModel) {
         composable("mangalist_screen") {
             DisplayListOnClick(navController = navController)
         }
-        composable(route = Screen.Calendar.route) {
+        composable(route = Screen.MangaPage.route) {
             MangaPageScreen(viewModel)
         }
     }
@@ -215,7 +215,7 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                         horizontalAlignment = Alignment.Start
                     ){
                         Card(onClick = { viewModel.selectedManga=p.child("title").value.toString();
-                            navController.navigate(Screen.Calendar.route)},
+                            navController.navigate(Screen.MangaPage.route)},
                             modifier=Modifier.size(100.dp, 140.dp)) {
                             AsyncImage(
                                 model = url,
@@ -309,7 +309,7 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
                         Card(onClick = { viewModel.selectedManga=p.child("title").value.toString();
-                            navController.navigate(Screen.Calendar.route)},
+                            navController.navigate(Screen.MangaPage.route)},
                             modifier=Modifier.size(100.dp, 140.dp)) {
                             AsyncImage(
                                 model = url,

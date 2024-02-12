@@ -37,7 +37,7 @@ fun NavGraph(navController: NavHostController, viewModel: AppViewModel){
             MapScreen(viewModel,navController)
         }
         // the following are just for Anna, pls don't touch them
-        composable(route = Screen.Calendar.route) {
+        composable(route = Screen.MangaPage.route) {
             MangaPageScreen(viewModel)
         }
         composable(route = "manga") {
