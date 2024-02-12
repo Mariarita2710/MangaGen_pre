@@ -92,6 +92,9 @@ fun ProfileScreen(navController: NavController, viewModel: AppViewModel) {
         composable("edit_screen") {
             EditProfile(viewModel,navController = navController)
         }
+        composable(route = Screen.Calendar.route) {
+            MangaPageScreen(viewModel)
+        }
     }
 }
 

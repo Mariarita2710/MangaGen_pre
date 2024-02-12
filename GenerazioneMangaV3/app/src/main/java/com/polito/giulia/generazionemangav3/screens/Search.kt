@@ -257,7 +257,6 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                             fontWeight = FontWeight.SemiBold
                         )
                     }
-
                 }
                     }
                     Row(
