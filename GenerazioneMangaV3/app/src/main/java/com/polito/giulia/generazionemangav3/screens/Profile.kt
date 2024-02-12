@@ -69,6 +69,7 @@ import androidx.navigation.compose.NavHost
 import com.polito.giulia.generazionemangav3.ui.theme.Screen
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
@@ -80,6 +81,8 @@ import com.google.firebase.database.ValueEventListener
 import com.polito.giulia.generazionemangav3.FindUrl
 import com.polito.giulia.generazionemangav3.R
 import com.polito.giulia.generazionemangav3.database
+import com.polito.giulia.generazionemangav3.ui.theme.Violet20
+import com.polito.giulia.generazionemangav3.ui.theme.Violet40
 
 
 @Composable
@@ -101,7 +104,7 @@ fun ProfileScreen(navController: NavController, viewModel: AppViewModel) {
 @Composable
 fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modifier = Modifier
     .padding(top = 74.dp)
-    .padding(bottom = 74.dp)
+    .padding(bottom = 100.dp)
     .verticalScroll(rememberScrollState())){
     val scrollState = rememberScrollState()
 
@@ -165,7 +168,15 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
     Box(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.primary)
-        .padding(top = 70.dp)
+        .padding(top = 70.dp,
+            bottom = 80.dp)
+        .background(
+            brush = Brush.linearGradient(
+                colors = listOf(
+                    Violet40, Violet20
+                )
+            )
+        )
         .verticalScroll(rememberScrollState())) {
         Column(
             modifier = Modifier
@@ -186,17 +197,20 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                         //che fa cambiare il testo a seconda delle cose che vengono scelte quando si fa edit prof
                         //quindi da aggiungere in post
                         color = MaterialTheme.colorScheme.onPrimary,
-                        fontFamily = fontFamily
+                        fontFamily = fontFamily,
+                        modifier = Modifier.padding(8.dp)
                     )
                     Text(
                         text = " Favourite authors: " + favouritesAuthorsList,
                         color = MaterialTheme.colorScheme.onPrimary,
-                        fontFamily = fontFamily
+                        fontFamily = fontFamily,
+                        modifier = Modifier.padding(8.dp)
                     )
                     Text(
                         text = " Favourite publishers: " + favouritesEditorsList,
                         color = MaterialTheme.colorScheme.onPrimary,
-                        fontFamily = fontFamily
+                        fontFamily = fontFamily,
+                        modifier = Modifier.padding(8.dp)
                     )
 
             }
