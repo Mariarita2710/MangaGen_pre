@@ -390,9 +390,9 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
     var author1= "Isayama"
     var author2="One"
     var author3="Urasawa"
-    var editor1= "jpop"
-    var editor2="panini"
-    var editor3="dynit"
+    var editor1= "Jpop"
+    var editor2="Panini"
+    var editor3="Dynit"
 
     val buttonStates = remember {
         mapOf(
