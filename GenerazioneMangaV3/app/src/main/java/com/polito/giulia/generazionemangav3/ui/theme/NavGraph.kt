@@ -11,6 +11,7 @@ import com.polito.giulia.generazionemangav3.HomePage
 import com.polito.giulia.generazionemangav3.screens.DigitalScreen
 import com.polito.giulia.generazionemangav3.screens.MangaDetail
 import com.polito.giulia.generazionemangav3.screens.MangaPageScreen
+import com.polito.giulia.generazionemangav3.screens.MapScreen
 import com.polito.giulia.generazionemangav3.screens.PaperScreen
 import com.polito.giulia.generazionemangav3.screens.ProfileScreen
 import com.polito.giulia.generazionemangav3.screens.SearchScreen
@@ -31,6 +32,9 @@ fun NavGraph(navController: NavHostController, viewModel: AppViewModel){
         }
         composable(route = Screen.Profile.route) {
             ProfileScreen(navController, viewModel)
+        }
+        composable(route = Screen.Map.route) {
+            MapScreen(viewModel,navController)
         }
         // the following are just for Anna, pls don't touch them
         composable(route = Screen.Calendar.route) {

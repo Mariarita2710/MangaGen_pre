@@ -36,16 +36,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.polito.giulia.generazionemangav3.AppViewModel
 import com.polito.giulia.generazionemangav3.ui.theme.Green
+import com.polito.giulia.generazionemangav3.ui.theme.Screen
 import com.polito.giulia.generazionemangav3.ui.theme.Violet20
 import com.polito.giulia.generazionemangav3.ui.theme.Violet40
 import com.polito.giulia.generazionemangav3.ui.theme.fontFamily
 
 @Composable
 fun PaperScreen(viewModel: AppViewModel, navController: NavController) {
+    val navController = rememberNavController()
 
-    NearYou(navController)
+    NavHost(navController = navController, startDestination = "near_you") {
+        composable("near_you") {
+            NearYou(navController)
+        }
+        composable(Screen.Map.route) {
+            MapScreen(viewModel,navController)
+        }
+    }
+
 /*
     Box(modifier = Modifier
         .fillMaxSize()
@@ -159,7 +172,9 @@ fun NearYou(navController: NavController) {
                         .padding(start = 10.dp, end = 10.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.secondary
-                        )){
+                        ),
+                        onClick ={ navController.navigate(Screen.Map.route)})
+                    {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceAround
