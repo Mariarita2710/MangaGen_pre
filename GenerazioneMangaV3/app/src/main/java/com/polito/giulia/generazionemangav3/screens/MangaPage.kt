@@ -116,6 +116,9 @@ fun MangaPageScreen(viewModel: AppViewModel){
             val numb = it.arguments?.getInt("number") ?: ""
             VolumePageScreen(viewModel, numb as Int)
         }
+        composable(route = Screen.Search.route) {
+            SearchScreen(navController,viewModel)
+        }
     }
 }
 
@@ -195,6 +198,20 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
             )
             //.background(MaterialTheme.colorScheme.primary)
     ) {
+        IconButton(
+            modifier = Modifier
+               .layoutId("arrowBack") ,
+            onClick = {
+                navController.navigate(Screen.Search.route)
+                Log.d("vwghsfwghf", "gksjnf")
+            },
+            colors = IconButtonDefaults.iconButtonColors(contentColor = androidx.compose.material3.MaterialTheme.colorScheme.tertiary)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back"
+            )
+        }
         AsyncImage(
             model=url,
             contentDescription = "Manga banner",
@@ -205,19 +222,6 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                 .padding(bottom = 200.dp),
             alpha = 0.5F
         )
-        IconButton(
-            modifier = Modifier
-                .layoutId("arrowBack"),
-            onClick = {
-                navController.navigateUp()
-            },
-            colors = IconButtonDefaults.iconButtonColors(contentColor = androidx.compose.material3.MaterialTheme.colorScheme.tertiary)
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back"
-            )
-        }
 /*
         Image(
             painter = painterResource(id = R.drawable.solo_leveling_banner),

@@ -188,7 +188,7 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
             ProfileHeader(navController)
             Card(modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp),
+                .padding(top = 10.dp),
                 colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary)
             ) {
 
@@ -369,16 +369,19 @@ fun ProfileHeader(navController: NavController) {
     ) {
         Icon(imageVector = Icons.Default.AccountCircle,
             contentDescription ="profile pic",
-            modifier = Modifier.size(70.dp))
+            modifier = Modifier.size(90.dp))
         Column {
             Text(
                 text = "Mario Rossi",
                 color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 24.sp
+                fontSize = 24.sp,
+                fontFamily = fontFamily
             )
             Text(
                 text = "redMario94",
-                color = MaterialTheme.colorScheme.onPrimary
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontSize = 14.sp,
+                fontFamily = fontFamily
             )
         }
         Button(
