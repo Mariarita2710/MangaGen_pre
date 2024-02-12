@@ -867,7 +867,7 @@ fun addToAuthors(authors: String, id: String){
                     lastKey= i+1
                     println("LastKey: "+lastKey)
                 }
-                database.child("users").child(id).child("genres").child(lastKey.toString()).setValue(authors)
+                database.child("users").child(id).child("authors").child(lastKey.toString()).setValue(authors)
             }
             else{
                 val favouriteMap = mapOf(lastKey.toString() to authors)
@@ -882,7 +882,7 @@ fun addToAuthors(authors: String, id: String){
 
 fun addToEditors(editors: String, id: String){
 
-    var favourites= database.child("users").child(id).child("editors")
+    var favourites= database.child("users").child(id).child("publishers")
     favourites.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
             var lastKey = 0
@@ -893,11 +893,11 @@ fun addToEditors(editors: String, id: String){
                     lastKey= i+1
                     println("LastKey: "+lastKey)
                 }
-                database.child("users").child(id).child("genres").child(lastKey.toString()).setValue(editors)
+                database.child("users").child(id).child("publishers").child(lastKey.toString()).setValue(editors)
             }
             else{
                 val favouriteMap = mapOf(lastKey.toString() to editors)
-                database.child("users").child(id).child("genres").setValue(favouriteMap)
+                database.child("users").child(id).child("publishers").setValue(favouriteMap)
             }
         }
         override fun onCancelled(databaseError: DatabaseError) {
