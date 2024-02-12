@@ -151,7 +151,7 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                         }
                     }
                 ) {
-                    DisplayIconList(viewModel, text)
+                    DisplayIconList(navController,viewModel, text)
                 }
             }
             var mangaListDB by remember { mutableStateOf<List<String>>(emptyList()) }
@@ -355,17 +355,17 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
 //}
 
 @Composable
-fun DisplayIconList(viewModel: AppViewModel, searchText: String) {
+fun DisplayIconList(navController: NavController,viewModel: AppViewModel, searchText: String) {
 
     val mangaList = listOf(
-        "Manga 1",
+        "Attack on Titan",
         "Manga 2",
         "Manga 3",
         "Manga 4"
     )
 
     //val mangaListDB= database.child("manga")
-    var mangaListDB by remember { mutableStateOf<List<String>>(emptyList()) }
+    //var mangaListDB by remember { mutableStateOf<List<String>>(emptyList()) }
     var listaDB = database.child("manga")
     listaDB.addValueEventListener(object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
@@ -376,7 +376,7 @@ fun DisplayIconList(viewModel: AppViewModel, searchText: String) {
                 // Aggiungi il prodotto alla lista
                 list.add(childSnapshot.value.toString())
             }
-            mangaListDB=list
+            //mangaListDB=list
         }
         override fun onCancelled(databaseError: DatabaseError) {
             // Gestisci gli errori qui
@@ -427,7 +427,7 @@ fun DisplayIconList(viewModel: AppViewModel, searchText: String) {
     var man = viewModel.selectedManga
 
     // Filtra la lista dei manga in base al testo di ricerca
-    val filteredMangaList = mangaListDB.filter { it.contains(searchText, ignoreCase = true) }
+    val filteredMangaList = mangaList.filter { it.contains(searchText, ignoreCase = true) }
 
     // Mostra solo i manga che corrispondono al testo di ricerca
     Column {
@@ -439,28 +439,19 @@ fun DisplayIconList(viewModel: AppViewModel, searchText: String) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            val sl = viewModel.mangas.observeAsState(emptyList()).value
-                .filter { it.child("title").value.toString() == manga }
-            var url = ""
-            sl.forEach { s ->
-                url = FindUrl(fileName = manga + " Cover.jpg")
-            }
-            AsyncImage(
-                model = url,
-                contentDescription = "Manga banner",
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .layoutId("banner")
-                    .fillMaxSize()
-                    .padding(bottom = 200.dp),
-                alpha = 0.5F
-            )
-            /* Icon(
-                imageVector = Icons.Filled.AccountBox,
-                modifier = Modifier.size(80.dp),
-                contentDescription = "manga1"
-            )*/
-            Text(text = manga)
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Icon(
+                        imageVector = Icons.Filled.AccountBox,
+                        modifier = Modifier.size(80.dp),
+                        contentDescription = "manga1"
+                    )
+                    Text(manga)
+                }
+
+
             // Aggiungi qui i pulsanti o le azioni per i manga
             IconButton(
                 onClick = {
