@@ -853,3 +853,55 @@ fun addToGenres(genre: String, id: String){
         }
     })
 }
+
+fun addToAuthors(authors: String, id: String){
+
+    var favourites= database.child("users").child(id).child("authors")
+    favourites.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+            var lastKey = 0
+            if(dataSnapshot.exists()){
+
+                for (childSnapshot in dataSnapshot.children) {
+                    val i = childSnapshot.key?.toInt() ?: 0
+                    lastKey= i+1
+                    println("LastKey: "+lastKey)
+                }
+                database.child("users").child(id).child("genres").child(lastKey.toString()).setValue(authors)
+            }
+            else{
+                val favouriteMap = mapOf(lastKey.toString() to authors)
+                database.child("users").child(id).child("authors").setValue(favouriteMap)
+            }
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            println("Cannot read data from database: ${databaseError.message}")
+        }
+    })
+}
+
+fun addToEditors(editors: String, id: String){
+
+    var favourites= database.child("users").child(id).child("editors")
+    favourites.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+            var lastKey = 0
+            if(dataSnapshot.exists()){
+
+                for (childSnapshot in dataSnapshot.children) {
+                    val i = childSnapshot.key?.toInt() ?: 0
+                    lastKey= i+1
+                    println("LastKey: "+lastKey)
+                }
+                database.child("users").child(id).child("genres").child(lastKey.toString()).setValue(editors)
+            }
+            else{
+                val favouriteMap = mapOf(lastKey.toString() to editors)
+                database.child("users").child(id).child("genres").setValue(favouriteMap)
+            }
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            println("Cannot read data from database: ${databaseError.message}")
+        }
+    })
+}

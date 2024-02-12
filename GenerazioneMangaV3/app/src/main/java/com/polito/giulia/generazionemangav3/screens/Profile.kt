@@ -188,15 +188,6 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontFamily = fontFamily
                     )
-
-               /* favouriteGenresList.forEach{ g ->
-                    Text(
-                        text = g,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontFamily = fontFamily,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }*/
                     Text(
                         text = " Favourite authors: " + favouritesAuthorsList,
                         color = MaterialTheme.colorScheme.onPrimary,
@@ -391,9 +382,31 @@ fun ProfileHeader(navController: NavController) {
 @Composable
 fun EditProfile(viewModel: AppViewModel, navController: NavController) {
     var selectedLanguage = remember { mutableStateOf<Lang?>(null) }
+    var selected by remember { mutableStateOf(false) }
+    val color = if (selected) Color.Gray else MaterialTheme.colorScheme.tertiary
     var genre1="Drama"
     var genre2="Shonen"
     var genre3="Action"
+    var author1= "Isayama"
+    var author2="One"
+    var author3="Urasawa"
+    var editor1= "jpop"
+    var editor2="panini"
+    var editor3="dynit"
+
+    val buttonStates = remember {
+        mapOf(
+            "genre1" to mutableStateOf(false),
+            "genre2" to mutableStateOf(false),
+            "genre3" to mutableStateOf(false),
+            "author1" to mutableStateOf(false),
+            "author2" to mutableStateOf(false),
+            "author3" to mutableStateOf(false),
+            "editor1" to mutableStateOf(false),
+            "editor2" to mutableStateOf(false),
+            "editor3" to mutableStateOf(false),
+        )
+    }
 
 
     Box(
@@ -441,27 +454,29 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = { addToGenres(genre1,"1") },
+                    onClick = { buttonStates["genre1"]?.value = !(buttonStates["genre1"]?.value ?: false)
+                        addToGenres(genre1,"1") },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
-                    ),
-                ) {
+                        containerColor = if (buttonStates["genre1"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
+                    )){
                     Text(genre1)
                 }
                 Button(
-                    onClick = {addToGenres(genre2,"1" )},
+                    onClick = { buttonStates["genre2"]?.value = !(buttonStates["genre2"]?.value ?: false)
+                        addToGenres(genre2,"1")},
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
+                        containerColor = if (buttonStates["genre2"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
                     ),
-                ) {
+                ){
                     Text(genre2)
                 }
                 Button(
-                    onClick = {addToGenres(genre3,"1") },
+                    onClick = { buttonStates["genre3"]?.value = !(buttonStates["genre3"]?.value ?: false)
+                        addToGenres(genre3,"1")},
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
+                        containerColor = if (buttonStates["genre3"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
                     ),
-                ) {
+                ){
                     Text(genre3)
                 }
             }
@@ -476,28 +491,31 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = {/*TODO*/ },
+                    onClick = { buttonStates["author1"]?.value = !(buttonStates["author1"]?.value ?: false)
+                        addToAuthors(author1,"1") },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
+                        containerColor = if (buttonStates["author1"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
                     ),
-                ) {
-                    Text("Isayama")
+                ){
+                    Text(author1)
                 }
                 Button(
-                    onClick = {/*TODO*/ },
+                    onClick = { buttonStates["author2"]?.value = !(buttonStates["author2"]?.value ?: false)
+                        addToAuthors(author2,"1")},
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
+                        containerColor = if (buttonStates["author2"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
                     ),
                 ) {
-                    Text("One")
+                    Text(author2)
                 }
                 Button(
-                    onClick = {/*TODO*/ },
+                    onClick = { buttonStates["author3"]?.value = !(buttonStates["author3"]?.value ?: false)
+                        addToAuthors(author3,"1")},
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
+                        containerColor = if (buttonStates["author3"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
                     ),
-                ) {
-                    Text("Urasawa")
+                )  {
+                    Text(author3)
                 }
             }
             Text(
@@ -511,28 +529,34 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = {/*TODO*/ },
+                    onClick = { buttonStates["editor1"]?.value = !(buttonStates["editor1"]?.value ?: false)
+                        addToEditors(editor1,"1")
+                    },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
+                        containerColor = if (buttonStates["editor1"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
                     ),
                 ) {
-                    Text("jpop")
+                    Text(editor1)
                 }
                 Button(
-                    onClick = {/*TODO*/ },
+                    onClick = { buttonStates["editor2"]?.value = !(buttonStates["editor2"]?.value ?: false)
+                        addToEditors(editor2,"1")
+                    },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
+                        containerColor = if (buttonStates["editor2"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
                     ),
                 ) {
-                    Text("panini")
+                    Text(editor2)
                 }
                 Button(
-                    onClick = { },
+                    onClick = { buttonStates["editor3"]?.value = !(buttonStates["editor3"]?.value ?: false)
+                        addToEditors(editor3,"1")
+                    },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
+                        containerColor = if (buttonStates["editor3"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
                     ),
-                ) {
-                    Text(text="dynit")
+                )  {
+                    Text(editor3)
                 }
             }
             Text(
@@ -544,19 +568,7 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {/*
-                Icon(painter = painterResource(R.drawable.flag_it),
-                    contentDescription ="flag ita",
-                    modifier = Modifier.size(30.dp))
-                Icon(painter = painterResource(R.drawable.flag_jp),
-                    contentDescription ="flag jp",
-                    modifier = Modifier.size(30.dp))
-                Icon(painter = painterResource(R.drawable.flag_kr),
-                    contentDescription ="flag kr",
-                    modifier = Modifier.size(30.dp))
-                Icon(painter = painterResource(R.drawable.flag_uk),
-                    contentDescription ="flag uk",
-                    modifier = Modifier.size(30.dp))*/
+            ) {
                 LanguageSelection(selectedLanguage = selectedLanguage.value) { lang ->
                     selectedLanguage.value = lang
                 }
