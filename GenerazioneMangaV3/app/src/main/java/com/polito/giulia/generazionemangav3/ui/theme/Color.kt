@@ -9,7 +9,7 @@ val Blue40 = Color(0xFF375195) //colore sfondo
 val Violet20 = Color(0xFF6688DF) //sfondo elementi in risalto
 //val Violet10 = Color(0xFF6F6B94) //textfields
 val Violet10 = Color(0xFF8194C5) //textfields
-
+//commento
 
 //val Coral40 = Color(0xFFDD5736) //colore dettagli, icone e bottoni
 val Coral40 = Color(0xFFEE7B00) //colore dettagli, icone e bottoni
