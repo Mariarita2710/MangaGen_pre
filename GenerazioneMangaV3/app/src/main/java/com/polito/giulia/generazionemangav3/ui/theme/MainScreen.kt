@@ -45,18 +45,21 @@ fun MainScreen(viewModel: AppViewModel){
     val currentDestination = navBackStackEntry?.destination
 
     Scaffold(
-        topBar = {
-                if(currentDestination?.route == Screen.Settings.route
-                    || currentDestination?.route == Screen.Notifications.route
-                    ){
-                    SmallTopAppBar(navController = navController)
-                } else {
-                    TopBar(navController = navController)
-                }
+        topBar = {if(currentDestination?.route!=Screen.Login.route) {
+            if (currentDestination?.route == Screen.Settings.route
+                || currentDestination?.route == Screen.Notifications.route
+            ) {
+                SmallTopAppBar(navController = navController)
+            } else {
+                TopBar(navController = navController)
+            }
+        }
 
         },
         bottomBar = {
-            BottomBar(navController = navController)
+            if(currentDestination?.route!=Screen.Login.route) {
+                BottomBar(navController = navController)
+            }
         }
     ) {
         NavGraph(navController = navController,viewModel)
@@ -76,7 +79,7 @@ val screens = listOf(
     val currentDestination = navBackStackEntry?.destination
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.onBackground
+        containerColor = MaterialTheme.colorScheme.primary
     ) {
         screens.forEach{
             screen ->
@@ -172,6 +175,7 @@ fun TopBar(navController: NavHostController) {
         Screen.Settings
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+
     val currentDestination = navBackStackEntry?.destination
         NavigationBar(
             containerColor = MaterialTheme.colorScheme.primary) {

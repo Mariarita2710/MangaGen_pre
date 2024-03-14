@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -23,6 +24,11 @@ sealed class Screen(val route: String,
         route = "home",
         title = "Home",
         icon = Icons.Default.Home
+    )
+    object Login: Screen(
+        route = "login",
+        title = "Login",
+        icon = Icons.Default.Lock
     )
     object Calendar: Screen(
         route = "calendar",

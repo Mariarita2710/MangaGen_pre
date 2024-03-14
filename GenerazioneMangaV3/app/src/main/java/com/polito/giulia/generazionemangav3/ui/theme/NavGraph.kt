@@ -9,9 +9,11 @@ import androidx.navigation.navArgument
 import com.polito.giulia.generazionemangav3.AppViewModel
 import com.polito.giulia.generazionemangav3.HomePage
 import com.polito.giulia.generazionemangav3.screens.DigitalScreen
+import com.polito.giulia.generazionemangav3.screens.Login
 import com.polito.giulia.generazionemangav3.screens.MangaDetail
 import com.polito.giulia.generazionemangav3.screens.MangaPageScreen
 import com.polito.giulia.generazionemangav3.screens.MapScreen
+import com.polito.giulia.generazionemangav3.screens.MyCalendar
 import com.polito.giulia.generazionemangav3.screens.PaperScreen
 import com.polito.giulia.generazionemangav3.screens.ProfileScreen
 import com.polito.giulia.generazionemangav3.screens.SearchScreen
@@ -22,8 +24,11 @@ import com.polito.giulia.generazionemangav3.screens.VolumePageScreen
 fun NavGraph(navController: NavHostController, viewModel: AppViewModel){
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Login.route
     ) {
+        composable(route = Screen.Login.route) {
+            Login(viewModel, navController)
+        }
         composable(route = Screen.Home.route) {
             HomePage(viewModel, navController)
         }
@@ -54,6 +59,9 @@ fun NavGraph(navController: NavHostController, viewModel: AppViewModel){
         }
         composable(route = Screen.Digital.route) {
             DigitalScreen(viewModel,navController)
+        }
+        composable(route = Screen.Calendar.route) {
+            MyCalendar(navController,viewModel)
         }
     }
 }

@@ -30,6 +30,8 @@ fun Profile(viewModel: AppViewModel, modifier: Modifier = Modifier
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -48,12 +50,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -69,6 +74,7 @@ import androidx.navigation.compose.NavHost
 import com.polito.giulia.generazionemangav3.ui.theme.Screen
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -168,8 +174,10 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
     Box(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.primary)
-        .padding(top = 70.dp,
-            bottom = 80.dp)
+        .padding(
+            top = 70.dp,
+            bottom = 80.dp
+        )
         .background(
             brush = Brush.linearGradient(
                 colors = listOf(
@@ -362,36 +370,61 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
 
 @Composable
 fun ProfileHeader(navController: NavController) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Icon(imageVector = Icons.Default.AccountCircle,
-            contentDescription ="profile pic",
-            modifier = Modifier.size(90.dp))
-        Column {
-            Text(
-                text = "Mario Rossi",
-                color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 24.sp,
-                fontFamily = fontFamily
-            )
-            Text(
-                text = "redMario94",
-                color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 14.sp,
-                fontFamily = fontFamily
-            )
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(120.dp)
+                    .border(1.dp, MaterialTheme.colorScheme.tertiary, CircleShape)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.profile_picture),
+                    contentDescription = "Profile icon",
+                    contentScale = ContentScale.Crop,
+                )
+            }
+
+            Column {
+                Text(
+                    text = "Sarah Rossi",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontSize = 24.sp,
+                    fontFamily = fontFamily
+                )
+                Text(
+                    text = "redSarah15",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontSize = 14.sp,
+                    fontFamily = fontFamily
+                )
+                Text(
+                    //TODO capire perchè crasha, sicuramente roba di navigazione
+                    text = "Logout",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontFamily = fontFamily,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.clickable(onClick = {
+                        navController.navigate(Screen.Login.route)
+                    })
+                )
+            }
         }
         Button(
-            onClick = {navController.navigate("edit_screen") },
-            modifier = Modifier.align(Alignment.CenterVertically),
+            onClick = { navController.navigate("edit_screen") },
+            modifier = Modifier.align(Alignment.End),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.tertiary
             ),
         ) {
-            Text("edit profile")
+            Text("Edit profile")
         }
     }
 }
@@ -399,8 +432,12 @@ fun ProfileHeader(navController: NavController) {
 @Composable
 fun EditProfile(viewModel: AppViewModel, navController: NavController) {
     var selectedLanguage = remember { mutableStateOf<Lang?>(null) }
-    var selected by remember { mutableStateOf(false) }
-    val color = if (selected) Color.Gray else MaterialTheme.colorScheme.tertiary
+    var selected1 by remember { mutableStateOf(false) }
+    var selected2 by remember { mutableStateOf(false) }
+    var selected3 by remember { mutableStateOf(false) }
+    val genres = database.child("users").child("1").child("genres")
+
+    // val color = if (selected1 || selected2 || selected3) Color.Gray else MaterialTheme.colorScheme.tertiary
     var genre1="Drama"
     var genre2="Shonen"
     var genre3="Action"
@@ -424,7 +461,6 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
             "editor3" to mutableStateOf(false),
         )
     }
-
 
     Box(
         modifier = Modifier
@@ -470,7 +506,7 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Button(
+                /*Button(
                     onClick = { buttonStates["genre1"]?.value = !(buttonStates["genre1"]?.value ?: false)
                         addToGenres(genre1,"1") },
                     colors = ButtonDefaults.buttonColors(
@@ -495,7 +531,106 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                     ),
                 ){
                     Text(genre3)
-                }
+                }*/
+                var isEnabled by remember { mutableStateOf(true) }
+                FilterChip(
+                    onClick = {
+                            selected1 = !selected1
+                            if (selected1) {
+                                buttonStates["genre1"]?.value =
+                                    !(buttonStates["genre1"]?.value ?: false)
+                                addToGenres(genre1, "1")
+
+                            } else {
+                                buttonStates["genre1"]?.value =
+                                    !(buttonStates["genre1"]?.value ?: true)
+                                removeFromGenres(genre1,"1")
+                            }
+                              },
+                    label = {
+                        Text(genre1)
+                    },
+                    colors = FilterChipDefaults.filterChipColors(
+                        containerColor = if (buttonStates["genre1"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
+                    ),
+                    selected = selected1,
+                    leadingIcon = if (selected1) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = "Done icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                )
+                FilterChip(
+                    onClick = { selected2 = !selected2
+                        if (selected2) {
+                            buttonStates["genre2"]?.value =
+                                !(buttonStates["genre2"]?.value ?: false)
+                            addToGenres(genre2, "1")
+                        } else {
+                            buttonStates["genre2"]?.value =
+                                !(buttonStates["genre2"]?.value ?: true)
+                            removeFromGenres(genre2,"1")
+
+                        }
+                    },
+                    label = {
+                        Text(genre2)
+                    },
+                    colors = FilterChipDefaults.filterChipColors(
+                        containerColor = if (buttonStates["genre2"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
+                    ),
+                    selected = selected2,
+                    leadingIcon = if (selected2) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = "Done icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                )
+                FilterChip(
+                    onClick = { selected3 = !selected3
+                        if (selected3) {
+                            buttonStates["genre3"]?.value =
+                                !(buttonStates["genre3"]?.value ?: false)
+                            addToGenres(genre3, "1")
+
+                        } else {
+                            buttonStates["genre3"]?.value =
+                                !(buttonStates["genre3"]?.value ?: true)
+                            removeFromGenres(genre3,"1")
+
+                        }
+                    },
+                    label = {
+                        Text(genre3)
+                    },
+                    colors = FilterChipDefaults.filterChipColors(
+                        containerColor = if (buttonStates["genre3"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
+                    ),
+                    selected = selected3,
+                    leadingIcon = if (selected3) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = "Done icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                )
             }
             Text(
                 text = "Favourite authors: ",
@@ -597,8 +732,8 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
             ) {
                 val context= LocalContext.current
                 Button(
-                    onClick = { navController.navigate("profile_screen") 
-                        Toast.makeText(context, "choices saved successfully", Toast.LENGTH_SHORT).show()},
+                    onClick = { navController.navigate("profile_screen")
+                    Toast.makeText(context, "choices saved successfully", Toast.LENGTH_SHORT).show()},
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary
                     ),

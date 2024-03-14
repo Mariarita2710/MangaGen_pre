@@ -49,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
@@ -70,6 +71,8 @@ import com.polito.giulia.generazionemangav3.FindUrl
 import com.polito.giulia.generazionemangav3.database
 import com.polito.giulia.generazionemangav3.ui.theme.Green
 import com.polito.giulia.generazionemangav3.ui.theme.Screen
+import com.polito.giulia.generazionemangav3.ui.theme.Violet20
+import com.polito.giulia.generazionemangav3.ui.theme.Violet40
 import com.polito.giulia.generazionemangav3.ui.theme.fontFamily
 import java.time.format.TextStyle
 
@@ -97,9 +100,16 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary)
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Violet40, Violet20
+                    )
+                )
+            )
             .padding(top = 10.dp)
-    ) {
+    )
+    {
         Column(
             modifier = Modifier
                 .fillMaxSize()

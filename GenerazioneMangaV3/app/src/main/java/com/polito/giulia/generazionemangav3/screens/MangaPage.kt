@@ -2,6 +2,7 @@ package com.polito.giulia.generazionemangav3.screens
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -25,7 +26,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -48,10 +51,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -70,13 +76,22 @@ import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation.NavController
@@ -429,15 +444,19 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                     .layoutId("btnHeart")
                     .padding(top = 32.dp, start = 320.dp, bottom = 8.dp, end = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween){
-
+                    val context= LocalContext.current
                     IconButton(
                         onClick = {
                             filledPlus = !filledPlus
                             if(filledPlus){
                             addToShelf(man, "1")
+                                Toast.makeText(context,"Successfully added to shelf!",Toast.LENGTH_SHORT
+                                ).show()
                         }
                         else {
                                 removeFromShelf(man, "1")
+                                Toast.makeText(context,"Successfully removed from shelf!",Toast.LENGTH_SHORT
+                                ).show()
                             }
                         },
                         colors = IconButtonDefaults.iconButtonColors(
@@ -466,9 +485,13 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                             filledHeart = !filledHeart
                             if(filledHeart){
                                 addToFavourites(man, "1")
+                                Toast.makeText(context,"Successfully added to favourites!",Toast.LENGTH_SHORT
+                                ).show()
                             }
                             else
                                 deleteFavourite(man, "1")
+                            Toast.makeText(context,"Successfully removed from favourites!",Toast.LENGTH_SHORT
+                            ).show()
                         },
                         colors = IconButtonDefaults.iconButtonColors(
                             contentColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -544,6 +567,7 @@ fun OptionBar() {
         }
     }
 */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InfoPage(author: String, genre: String, country: String, publisher: String, plot: String) {
     var showMore by remember { mutableStateOf(false) }
@@ -637,9 +661,141 @@ fun InfoPage(author: String, genre: String, country: String, publisher: String, 
                 fontWeight = FontWeight.Normal,
                 modifier = Modifier.padding(top = 20.dp)
             )
+            val reviewValue = remember { mutableStateOf(TextFieldValue()) }
+            var openAlertDialog by remember { mutableStateOf(false) }
+            var ctx = LocalContext.current
+
+            if (openAlertDialog){
+                Popup(
+                    onDismissRequest = { openAlertDialog = false },
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color(0xCC1D232C))
+                            .padding(horizontal = 20.dp)
+                    ){
+                        //EFFETTIVO BOX DEL POPUP
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(15.dp))
+                                .background(
+                                    MaterialTheme.colorScheme.primary,
+                                    RoundedCornerShape(15.dp)
+                                )
+                                .border(
+                                    2.dp,
+                                    MaterialTheme.colorScheme.tertiary,
+                                    RoundedCornerShape(15.dp)
+                                )
+                        ){
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    //.fillMaxSize()
+                                    .background(MaterialTheme.colorScheme.primary)
+                                    .padding(16.dp)
+                            ){
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = buildAnnotatedString {
+                                        append("Leave a review about this manga")
+                                    },
+                                    fontSize = 20.sp,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.SemiBold,
+                                    textAlign = TextAlign.Center,
+                                    fontFamily = fontFamily,
+                                )
+                                Spacer(modifier = Modifier.height(22.dp))
+                                Column(modifier = Modifier.padding(horizontal = 18.dp)) {
+                                    OutlinedTextField(
+                                        value = reviewValue.value,
+                                        visualTransformation = PasswordVisualTransformation(),
+                                        shape = MaterialTheme.shapes.large,
+                                        placeholder =
+                                        {
+                                            Text(
+                                                text = "Review",
+                                                fontFamily = fontFamily,
+                                                fontWeight = FontWeight.Light,
+                                                fontSize = 18.sp,
+                                                fontStyle = FontStyle.Italic,
+                                                color = Color.White
+                                            )
+                                        },
+                                        onValueChange = {
+                                            reviewValue.value = it
+                                        },
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                                        singleLine = true,
+                                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                                            containerColor = MaterialTheme.colorScheme.onBackground,
+                                            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                            focusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                                            focusedTextColor = Color.White,
+                                            unfocusedTextColor = Color.White
+                                        ),
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(22.dp))
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp)
+                                ) {
+                                    TextButton(
+                                        modifier = Modifier.width(135.dp),
+                                        shape = RoundedCornerShape(3.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                                            contentColor = MaterialTheme.colorScheme.onErrorContainer
+                                        ),
+                                        onClick = {
+                                            openAlertDialog = false
+                                        }
+                                    ) {
+                                        Text(
+                                            text = "Go back",
+                                            fontFamily = fontFamily,
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                    TextButton(
+                                        modifier = Modifier.width(135.dp),
+                                        shape = RoundedCornerShape(3.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.tertiary,
+                                            contentColor = MaterialTheme.colorScheme.onTertiary
+                                        ),
+                                        onClick = {
+                                            Toast.makeText(ctx, "Review successfully posted!", Toast.LENGTH_SHORT).show()
+                                            openAlertDialog = false
+                                        }
+                                    ) {
+                                        Text(
+                                            text = "Post",
+                                            fontFamily = fontFamily,
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             Row(horizontalArrangement =Arrangement.Center){
-                Button(onClick = { /*TODO*/ },
+                Button(onClick = {
+                                 openAlertDialog=true
+                },
                     modifier = Modifier.padding(10.dp),
                     colors = ButtonDefaults.buttonColors((MaterialTheme.colorScheme.tertiary))) {
                     Text(
@@ -881,6 +1037,24 @@ fun addToGenres(genre: String, id: String){
         }
     })
 }
+
+fun removeFromGenres(genre: String, id: String){
+
+    var favourites= database.child("users").child(id).child("genres")
+    favourites.addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+            for (childSnapshot in dataSnapshot.children) {
+                if(childSnapshot.value.toString()==genre){
+                    childSnapshot.ref.removeValue()
+                }
+            }
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            println("Cannot read data from database: ${databaseError.message}")
+        }
+    })
+}
+
 
 fun addToAuthors(authors: String, id: String){
 
