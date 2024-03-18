@@ -1,12 +1,14 @@
 package com.polito.giulia.generazionemangav3.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material3.ButtonDefaults
@@ -28,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -35,8 +38,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.android.material.datepicker.DayViewDecorator
 import com.polito.giulia.generazionemangav3.AppViewModel
 import com.polito.giulia.generazionemangav3.ui.theme.Blue40
+import com.polito.giulia.generazionemangav3.ui.theme.Coral60
 import com.polito.giulia.generazionemangav3.ui.theme.Violet20
 import com.polito.giulia.generazionemangav3.ui.theme.Violet40
 import com.polito.giulia.generazionemangav3.ui.theme.fontFamily
@@ -87,7 +92,7 @@ fun MyCalendar(navController: NavController,viewModel: AppViewModel){
                 openDialog.value = false
             },
             tonalElevation = 30.dp,
-            colors = DatePickerDefaults.colors(Blue40),
+            colors = DatePickerDefaults.colors(MaterialTheme.colorScheme.tertiary),
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -152,7 +157,21 @@ fun MyCalendar(navController: NavController,viewModel: AppViewModel){
                 "Selected date timestamp: ${datePickerState.selectedDateMillis ?: "no selection"}",
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )*/
-            DatePicker(state = datePickerState, modifier = Modifier.padding(8.dp))
+            val cl = Calendar.getInstance()
+            if (datePickerState.selectedDateMillis != null) {
+                cl.timeInMillis =
+                    datePickerState.selectedDateMillis!! //here your time in miliseconds
+            }
+            val month = cl[Calendar.MONTH].toLong() + 1
+            val date =
+                "" + cl[Calendar.DAY_OF_MONTH] + "/" + month.toString() + "/" + cl[Calendar.YEAR]
+            DatePicker(state = datePickerState,
+                modifier = Modifier.padding(8.dp),
+                colors = DatePickerDefaults.colors(
+                    selectedDayContainerColor = if(date == "12/3/2024" || date == "19/3/2024" || date == "2/4/2024" || date == "16/4/2024")
+                        Coral60 else MaterialTheme.colorScheme.tertiary,
+                    todayDateBorderColor = MaterialTheme.colorScheme.tertiary
+            ))
             Divider(
                 color = MaterialTheme.colorScheme.primary, thickness = 1.dp,
                 modifier = Modifier.padding(start = 8.dp, end = 8.dp)
@@ -165,14 +184,6 @@ fun MyCalendar(navController: NavController,viewModel: AppViewModel){
                     //horizontalAlignment = Alignment.Start,
                     //verticalArrangement = Arrangement.Top
                 ) {
-                    val cl = Calendar.getInstance()
-                    if (datePickerState.selectedDateMillis != null) {
-                        cl.timeInMillis =
-                            datePickerState.selectedDateMillis!! //here your time in miliseconds
-                    }
-                    val month = cl[Calendar.MONTH].toLong() + 1
-                    val date =
-                        "" + cl[Calendar.DAY_OF_MONTH] + "/" + month.toString() + "/" + cl[Calendar.YEAR]
                    /* Text(
                         text = date,
                         color = MaterialTheme.colorScheme.onPrimary,
