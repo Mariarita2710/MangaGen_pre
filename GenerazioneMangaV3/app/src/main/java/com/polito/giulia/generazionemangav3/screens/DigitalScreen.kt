@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -190,11 +191,19 @@ fun Chapters(navController: NavController) {
                                     IconButtonDefaults.iconButtonColors(contentColor = Color.White)
                                 }
                             ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.CheckCircle,
-                                    contentDescription = "checked",
-                                    modifier = Modifier.size(50.dp)
-                                )
+                                if (isChecked.value) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.CheckCircle,
+                                        contentDescription = "checked",
+                                        modifier = Modifier.size(50.dp)
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Outlined.CheckCircle,
+                                        contentDescription = "unchecked",
+                                        modifier = Modifier.size(40.dp)
+                                    )
+                                }
                             }
 
                         }
