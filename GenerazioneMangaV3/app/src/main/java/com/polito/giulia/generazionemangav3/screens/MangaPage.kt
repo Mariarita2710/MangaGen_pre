@@ -136,6 +136,9 @@ fun MangaPageScreen(viewModel: AppViewModel){
         composable(route = Screen.Search.route) {
             SearchScreen(navController,viewModel)
         }
+        composable(route = Screen.Review.route) {
+            ReviewScreen(viewModel,navController)
+        }
     }
 }
 
@@ -209,7 +212,7 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Violet40,Violet20
+                        Violet40, Violet20
                     )
                 )
             )
@@ -299,10 +302,13 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "info_screen") {
                     composable("info_screen") {
-                        InfoPage(author, genre, country, publisher, plot)
+                        InfoPage(author, genre, country, publisher, plot, navController)
                     }
                     composable("volume_screen") {
                         VolumesPage(navController = navController, numVol)
+                    }
+                    composable("review_screen") {
+                        ReviewScreen(viewModel, navController)
                     }
                     composable("volume_page_screen/{number}",arguments = listOf(navArgument("number"){
                         type = NavType.IntType
@@ -571,7 +577,7 @@ fun OptionBar() {
 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InfoPage(author: String, genre: String, country: String, publisher: String, plot: String) {
+fun InfoPage(author: String, genre: String, country: String, publisher: String, plot: String, navController: NavController) {
     var showMore by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier
@@ -796,7 +802,8 @@ fun InfoPage(author: String, genre: String, country: String, publisher: String, 
 
             Row(horizontalArrangement =Arrangement.Center){
                 Button(onClick = {
-                                 openAlertDialog=true
+                                 //openAlertDialog=true
+                                 navController.navigate("review_screen")
                 },
                     modifier = Modifier.padding(10.dp),
                     colors = ButtonDefaults.buttonColors((MaterialTheme.colorScheme.tertiary))) {
@@ -911,22 +918,23 @@ fun VolumesPage(navController: NavController, numVol: Long) {
                                     /*TODO*/
                                 },
                                 colors = if (isChecked.value) {
-                                    IconButtonDefaults.iconButtonColors(contentColor = Green)
+                                    IconButtonDefaults.iconButtonColors(contentColor = Green, containerColor = Color.White)
                                 } else {
                                     IconButtonDefaults.iconButtonColors(contentColor = Color.White)
-                                }
+                                },
+                                modifier = Modifier.size(30.dp)
                             ) {
                                 if (isChecked.value) {
                                     Icon(
                                         imageVector = Icons.Rounded.CheckCircle,
                                         contentDescription = "checked",
-                                        modifier = Modifier.size(50.dp)
+                                        modifier = Modifier.size(40.dp)
                                     )
                                 } else {
                                     Icon(
                                         imageVector = Icons.Outlined.CheckCircle,
                                         contentDescription = "unchecked",
-                                        modifier = Modifier.size(40.dp)
+                                        modifier = Modifier.size(50.dp)
                                     )
                                 }
 

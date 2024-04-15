@@ -16,6 +16,7 @@ import com.polito.giulia.generazionemangav3.screens.MapScreen
 import com.polito.giulia.generazionemangav3.screens.MyCalendar
 import com.polito.giulia.generazionemangav3.screens.PaperScreen
 import com.polito.giulia.generazionemangav3.screens.ProfileScreen
+import com.polito.giulia.generazionemangav3.screens.ReviewScreen
 import com.polito.giulia.generazionemangav3.screens.SearchScreen
 import com.polito.giulia.generazionemangav3.screens.VolumePageScreen
 
@@ -62,6 +63,9 @@ fun NavGraph(navController: NavHostController, viewModel: AppViewModel){
         }
         composable(route = Screen.Calendar.route) {
             MyCalendar(navController,viewModel)
+        }
+        composable(route = Screen.Review.route) {
+            ReviewScreen(viewModel,navController)
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
@@ -84,5 +85,10 @@ sealed class Screen(val route: String,
         route = "digital",
         title = "Digital",
         icon = Icons.Default.Info
+    )
+    object Review: Screen(
+        route = "review",
+        title = "Review",
+        icon = Icons.Default.Edit
     )
 }
