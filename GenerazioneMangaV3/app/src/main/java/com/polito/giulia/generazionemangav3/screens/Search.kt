@@ -39,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarColors
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -96,6 +97,8 @@ fun SearchScreen(navController: NavController,viewModel: AppViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Search(navController: NavController, viewModel: AppViewModel) {
+
+    var testo_cercato = ""
 
     Box(
         modifier = Modifier
@@ -160,10 +163,23 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                             )
                         }
                     }
-                ) {
+                ){
+                    testo_cercato = text
                     DisplayIconList(viewModel, text, navController)
                 }
+
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                DisplayIconList(viewModel, testo_cercato, navController)
+            }
+
+
             var mangaListDB by remember { mutableStateOf<List<String>>(emptyList()) }
             var listaDB = database.child("manga")
 
@@ -184,6 +200,8 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
 
             val man by viewModel.mangas.observeAsState()
 
+
+
             /*listaDB.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
                     // Itera sui figli del nodo
@@ -202,6 +220,8 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                 }
             })
             */
+
+            /*
             Text(
                 text = "Trending",
                 color = MaterialTheme.colorScheme.onPrimary,
@@ -357,7 +377,7 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                                 fontSize = 18.sp
                             )
                         }
-                    }
+                    }*/
                 }
             }
         }
@@ -462,7 +482,9 @@ fun DisplayIconList(viewModel: AppViewModel, searchText: String, navController: 
             sl.forEach { s ->
                 url = FindUrl(fileName = manga + " Cover.jpg")
             }
-            Card(modifier = Modifier.width(100.dp).height(130.dp),
+            Card(modifier = Modifier
+                .width(100.dp)
+                .height(130.dp),
                 onClick = { viewModel.selectedManga=manga;
                     navController.navigate(Screen.MangaPage.route)}
             ){

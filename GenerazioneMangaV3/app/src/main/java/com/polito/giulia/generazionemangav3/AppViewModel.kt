@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
@@ -32,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
@@ -42,12 +45,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.database.values
+import com.polito.giulia.generazionemangav3.screens.filteredList
+import com.polito.giulia.generazionemangav3.ui.theme.Screen
+import com.polito.giulia.generazionemangav3.ui.theme.Violet20
+import com.polito.giulia.generazionemangav3.ui.theme.Violet40
 import com.polito.giulia.generazionemangav3.ui.theme.fontFamily
 
 //private lateinit var database: DatabaseReference
@@ -78,6 +86,26 @@ class AppViewModel: ViewModel() {
 fun HomePage(viewModel: AppViewModel, navController: NavController){
     val man by viewModel.mangas.observeAsState()
 
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Violet40, Violet20
+                    )
+                )
+            )
+            .padding(top = 100.dp)
+    )
+    {
+        Column(
+            modifier = Modifier
+                .padding(16.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+/*
     Column(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.primary)
@@ -86,6 +114,104 @@ fun HomePage(viewModel: AppViewModel, navController: NavController){
         Spacer(modifier = Modifier.height(5.dp))
         ScrollableColumn(viewModel)
         Spacer(modifier = Modifier.height(5.dp))
+*/
+            Text(
+                text = "Trending",
+                color = MaterialTheme.colorScheme.onPrimary,
+                textAlign = TextAlign.Left,
+                fontFamily = fontFamily,
+                fontWeight = FontWeight.Bold
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+
+            ) {
+                filteredList(section = "trending", viewModel = viewModel)?.forEach { p ->
+                    val fileName = p.child("title").value.toString() + " Cover.jpg"
+                    val url = FindUrl(fileName = fileName)
+                    Column(
+                        verticalArrangement = Arrangement.Bottom,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Card(
+                            onClick = {
+                                viewModel.selectedManga = p.child("title").value.toString();
+                                navController.navigate(Screen.MangaPage.route)
+                            },
+                            modifier = Modifier.size(100.dp, 140.dp)
+                        ) {
+                            AsyncImage(
+                                model = url,
+                                contentDescription = "Manga cover",
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Text(
+                            text = p.child("title").value.toString(),
+                            fontSize = 10.sp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            textAlign = TextAlign.Center,
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.width(100.dp)
+                        )
+
+                    }
+                }
+            }
+            Text(
+                text = "Recommeded by the community",
+                color = MaterialTheme.colorScheme.onPrimary,
+                textAlign = TextAlign.Left,
+                fontFamily = fontFamily,
+                fontWeight = FontWeight.Bold
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+
+            ) {
+                filteredList(section = "recommended", viewModel = viewModel)?.forEach { p ->
+                    val fileName = p.child("title").value.toString() + " Cover.jpg"
+                    val url = FindUrl(fileName = fileName)
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Card(
+                            onClick = {
+                                viewModel.selectedManga = p.child("title").value.toString();
+                                navController.navigate(Screen.MangaPage.route)
+                            },
+                            modifier = Modifier.size(100.dp, 140.dp)
+                        ) {
+                            AsyncImage(
+                                model = url,
+                                contentDescription = "Manga cover",
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Text(
+                            text = p.child("title").value.toString(),
+                            fontSize = 10.sp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            textAlign = TextAlign.Center,
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+
+                }
+            }
+
+        }
     }
 
 }
