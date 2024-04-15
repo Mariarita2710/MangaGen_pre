@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.ArrowBack
@@ -176,7 +177,7 @@ fun Search(navController: NavController, viewModel: AppViewModel) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                DisplayIconList(viewModel, testo_cercato, navController)
+                MangaListSearch(viewModel, testo_cercato, navController)
             }
 
 
@@ -467,7 +468,8 @@ fun DisplayIconList(viewModel: AppViewModel, searchText: String, navController: 
     val filteredMangaList = mangaList.filter { it.contains(searchText, ignoreCase = true) }
 
     // Mostra solo i manga che corrispondono al testo di ricerca
-    Column (verticalArrangement = Arrangement.spacedBy(8.dp)){
+    Column (verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.verticalScroll(rememberScrollState())){
 
     filteredMangaList.forEach { manga ->
         Row(
@@ -901,4 +903,131 @@ fun DisplayListOnClick(navController: NavController) {
 fun filteredList(section: String, viewModel: AppViewModel): List<DataSnapshot>{
     return viewModel.mangas.observeAsState(emptyList()).value
         .filter { it.child("section").value.toString() == section }
+}
+
+@Composable
+fun MangaListSearch(viewModel: AppViewModel, searchText: String, navController: NavController) {
+
+    //copia di DisplayIconList ma senza + e cuori
+
+    val mangaList = listOf(
+        "Attack on Titan",
+        "Bakuman",
+        "Death Note",
+        "Jujutsu Kaisen - Sorcery Fight",
+        "My Hero Academia",
+        "One Piece",
+        "Solo Leveling",
+        "Spy x Family",
+        "The Promised Neverland",
+        "Tokyo Ghoul",
+        "Tower of God"
+    )
+
+    var mangaListDB by remember { mutableStateOf<List<String>>(emptyList()) }
+    var listaDB = database.child("manga")
+    listaDB.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+            // Itera sui figli del nodo
+            var list= mutableListOf<String>()
+
+            for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                // Aggiungi il prodotto alla lista
+                list.add(childSnapshot.value.toString())
+            }
+            mangaListDB=list
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            // Gestisci gli errori qui
+            println("Errore nel leggere i dati dal database: ${databaseError.message}")
+        }
+    })
+
+    var favouriteList by remember { mutableStateOf<List<String>>(emptyList()) }
+    var favourites = database.child("users").child("1").child("favourites")
+    favourites.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+            // Itera sui figli del nodo
+            var list= mutableListOf<String>()
+
+            for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                // Aggiungi il prodotto alla lista
+                list.add(childSnapshot.value.toString())
+            }
+            favouriteList=list
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            // Gestisci gli errori qui
+            println("Errore nel leggere i dati dal database: ${databaseError.message}")
+        }
+    })
+
+    var shelfList by remember { mutableStateOf<List<String>>(emptyList()) }
+    var shelf= database.child("users").child("1").child("favourites")
+    shelf.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+            // Itera sui figli del nodo
+            var list= mutableListOf<String>()
+
+            for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                // Aggiungi il prodotto alla lista
+                list.add(childSnapshot.value.toString())
+            }
+            shelfList=list
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            // Gestisci gli errori qui
+            println("Errore nel leggere i dati dal database: ${databaseError.message}")
+        }
+    })
+
+    var filledHeart by remember { mutableStateOf(false) }
+    var filledPlus by remember { mutableStateOf(false) }
+    var man = viewModel.selectedManga
+
+    // Filtra la lista dei manga in base al testo di ricerca
+    val filteredMangaList = mangaList.filter { it.contains(searchText, ignoreCase = true) }
+
+    // Mostra solo i manga che corrispondono al testo di ricerca
+    Column (verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.verticalScroll(rememberScrollState())){
+
+        filteredMangaList.forEach { manga ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                val sl = viewModel.mangas.observeAsState(emptyList()).value
+                    .filter { it.child("title").value.toString() == manga }
+                var url = ""
+                sl.forEach { s ->
+                    url = FindUrl(fileName = manga + " Cover.jpg")
+                }
+                Card(modifier = Modifier
+                    .width(100.dp)
+                    .height(130.dp),
+                    onClick = { viewModel.selectedManga=manga;
+                        navController.navigate(Screen.MangaPage.route)}
+                ){
+                    AsyncImage(
+                        model = url,
+                        contentDescription = "Manga banner",
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                Text(
+                    text = manga,
+                    textAlign = TextAlign.Left,
+                    fontFamily = fontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp,
+                    color = Color.White
+                )
+
+            }
+        }
+
+    }
 }
