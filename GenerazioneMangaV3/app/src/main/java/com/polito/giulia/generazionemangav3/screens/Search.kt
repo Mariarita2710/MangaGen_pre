@@ -1025,7 +1025,6 @@ fun MangaListSearch(viewModel: AppViewModel, searchText: String, navController: 
                     fontSize = 20.sp,
                     color = Color.White
                 )
-
             }
         }
 

@@ -404,17 +404,6 @@ fun ProfileHeader(navController: NavController) {
                     fontSize = 14.sp,
                     fontFamily = fontFamily
                 )
-                Text(
-                    //TODO capire perchè crasha, sicuramente roba di navigazione
-                    text = "Logout",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontFamily = fontFamily,
-                    fontWeight = FontWeight.Normal,
-                    modifier = Modifier.clickable(onClick = {
-                        navController.navigate(Screen.Login.route)
-                    })
-                )
             }
         }
         Button(

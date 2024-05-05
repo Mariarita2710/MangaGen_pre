@@ -1,9 +1,11 @@
 package com.polito.giulia.generazionemangav3.ui.theme
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -168,6 +170,7 @@ TopAppBar(
 )
 }
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun TopBar(navController: NavHostController) {
     val screens = listOf(
@@ -193,7 +196,7 @@ fun SmallTopAppBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar(containerColor = MaterialTheme.colorScheme.onPrimaryContainer) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.primary) {
         TopItem3(
             navController = navController,
             currentDestination = currentDestination

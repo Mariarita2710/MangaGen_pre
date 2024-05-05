@@ -1,5 +1,6 @@
 package com.polito.giulia.generazionemangav3.ui.theme
 
+import SettingsScreen
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -66,6 +67,9 @@ fun NavGraph(navController: NavHostController, viewModel: AppViewModel){
         }
         composable(route = Screen.Review.route) {
             ReviewScreen(viewModel,navController)
+        }
+        composable(route = Screen.Settings.route) {
+            SettingsScreen(viewModel,navController)
         }
     }
 }
