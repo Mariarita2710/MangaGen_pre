@@ -420,7 +420,6 @@ fun ProfileHeader(navController: NavController) {
 
 @Composable
 fun EditProfile(viewModel: AppViewModel, navController: NavController) {
-    var selectedLanguage = remember { mutableStateOf<Lang?>(null) }
     var selected1 by remember { mutableStateOf(false) }
     var selected2 by remember { mutableStateOf(false) }
     var selected3 by remember { mutableStateOf(false) }
@@ -539,6 +538,7 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                     label = {
                         Text(genre1)
                     },
+
                     colors = FilterChipDefaults.filterChipColors(
                         containerColor = if (buttonStates["genre1"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
                     ),
@@ -700,22 +700,9 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                     Text(editor3)
                 }
             }
-            Text(
-                text = "App languages: ",
-                color = MaterialTheme.colorScheme.onPrimary,
-                fontFamily = fontFamily
-            )
+
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                LanguageSelection(selectedLanguage = selectedLanguage.value) { lang ->
-                    selectedLanguage.value = lang
-                }
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(top = 280.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -732,7 +719,7 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                 Button(
                     onClick = { navController.navigate("profile_screen") },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
+                        containerColor = Color.Gray
                     ),
                 ) {
                     Text("cancel")

@@ -12,6 +12,8 @@ import androidx.compose.material.Text
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -22,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polito.giulia.generazionemangav3.AppViewModel
+import com.polito.giulia.generazionemangav3.screens.Lang
+import com.polito.giulia.generazionemangav3.screens.LanguageSelection
 import com.polito.giulia.generazionemangav3.ui.theme.Screen
 import com.polito.giulia.generazionemangav3.ui.theme.Violet20
 import com.polito.giulia.generazionemangav3.ui.theme.Violet40
@@ -29,6 +33,7 @@ import com.polito.giulia.generazionemangav3.ui.theme.fontFamily
 
 @Composable
 fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
+    val selectedLanguage = remember { mutableStateOf<Lang?>(null)}
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(top = 70.dp)
@@ -48,7 +53,7 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
             ) {
                 Column {
                     Text(
-                        text = "Language Settings",
+                        text = "Language App Settings:",
                         textAlign = TextAlign.Left,
                         fontFamily = fontFamily,
                         fontWeight = FontWeight.Normal,
@@ -56,38 +61,19 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                         color = Color.White,
                         modifier = Modifier.padding(10.dp)
                     )
-                    Row {
-                        androidx.compose.material3.Button(
-                            onClick = { },
-                            modifier = Modifier.padding(0.dp, 0.dp, 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary
-                            )
-                        ) {
-                            Text(
-                                "English",
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontFamily = fontFamily,
-                                fontWeight = FontWeight.Normal
-                            )
-                        }
-                        androidx.compose.material3.Button(
-                            onClick = { },
-                            modifier = Modifier.padding(0.dp, 0.dp, 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary
-                            )
-                        ) {
-                            Text(
-                                "Italian",
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontFamily = fontFamily,
-                                fontWeight = FontWeight.Normal
-                            )
-                        }
+                    Row() {
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                LanguageSelection(selectedLanguage = selectedLanguage.value) { lang ->
+                                    selectedLanguage.value = lang
+                                }
+                            }
                     }
+
                 }
             }
             Column(
