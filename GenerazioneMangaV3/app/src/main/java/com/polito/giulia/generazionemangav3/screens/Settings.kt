@@ -51,7 +51,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -106,13 +111,9 @@ fun PopupBox(popupWidth: Float, popupHeight:Float, showPopup: Boolean, onClickOu
 @Composable
 fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
     val selectedLanguage = remember { mutableStateOf<Lang?>(null)}
-
     var checked by remember { mutableStateOf(true) }
-
     //per popup
     var showPopup by rememberSaveable { mutableStateOf(false) }
-    var selectedIndex by rememberSaveable { mutableStateOf(0) }
-
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -238,6 +239,14 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
             Box(
 
             ){
+                IconButton(
+                    onClick = {
+                        showPopup = false
+                    }
+                ) {
+                    Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+                }
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -246,13 +255,15 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                         fontFamily = fontFamily,
                         fontWeight = FontWeight.Normal,
                         fontSize = 20.sp,
-                        modifier = Modifier.padding(20.dp),
-                        color = Color.Black)
+                        modifier = Modifier.padding(10.dp, 90.dp),
+                        color = Color.Black,
+                        textAlign = TextAlign.Center)
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.padding(10.dp,250.dp)
+                    modifier = Modifier.padding(60.dp,250.dp),
+
                 ) {
                     androidx.compose.material3.Button(
                         onClick = { navController.navigate(Screen.Login.route) }
