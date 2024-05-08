@@ -1,3 +1,4 @@
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,37 +39,20 @@ import com.polito.giulia.generazionemangav3.ui.theme.Violet40
 import com.polito.giulia.generazionemangav3.ui.theme.fontFamily
 
 //import per popup
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import androidx.compose.ui.zIndex
+
 
 //funzione per far comparire popup di dialogo
 @Composable
@@ -115,6 +99,10 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
     var checked by remember { mutableStateOf(true) }
     //per popup
     var showPopup by rememberSaveable { mutableStateOf(false) }
+    var showPopupLogout by rememberSaveable { mutableStateOf(false) }
+    //per messaggio
+    val ctx = LocalContext.current
+    var openAlertDialog by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -197,7 +185,7 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                 Row(
                 ) {
                     androidx.compose.material3.Button(
-                        onClick = { navController.navigate(Screen.Login.route) },
+                        onClick = { showPopupLogout = true },
                         modifier = Modifier
                             .padding(15.dp)
                             .fillMaxWidth(),
@@ -217,7 +205,6 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                 }
                 Row() {
                     androidx.compose.material3.Text(
-                        //TODO che succede quando lo clicco?
                         text = "Delete your account",
                         color = Color.White,
                         fontSize = 16.sp,
@@ -292,7 +279,11 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
 
                 ) {
                     androidx.compose.material3.Button(
-                        onClick = { navController.navigate(Screen.Login.route) }
+                        onClick = {
+                            navController.navigate(Screen.Login.route)
+                            Toast.makeText(ctx, "Account successfully deleted!", Toast.LENGTH_SHORT).show()
+                            openAlertDialog = false
+                        }
                     ) {
                         Text("YES",
                             fontFamily = fontFamily,
@@ -317,4 +308,85 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
 
         }
     )
+
+
+    //per popup LOGOUT
+    PopupBox(popupWidth = 200F,
+        popupHeight = 300F,
+        showPopup = showPopupLogout,
+        onClickOutside = {showPopupLogout = false},
+        content = {
+            Box(
+
+            ){
+                //icona
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.align(alignment = Alignment.TopEnd)
+                ) {
+                    IconButton(
+                        onClick = { showPopupLogout = false },
+                        modifier = Modifier.padding(10.dp,0.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.size(150.dp)
+                        )
+                    }
+                }
+                //testi
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(text = "Are you sure you want to logout?",
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(10.dp, 180.dp),
+                        color = Color.Black,
+                        textAlign = TextAlign.Center)
+                }
+
+                //bottoni
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.padding(60.dp,10.dp).align(alignment = Alignment.BottomCenter),
+
+                    ) {
+                    androidx.compose.material3.Button(
+                        onClick = {
+                            navController.navigate(Screen.Login.route)
+                            Toast.makeText(ctx, "Logout successful!", Toast.LENGTH_SHORT).show()
+                            openAlertDialog = false
+                        }
+                    ) {
+                        Text("YES",
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 20.sp,
+                            color = Color.White)
+                    }
+                    androidx.compose.material3.Button(
+                        onClick = {showPopupLogout = false },
+                        colors = ButtonDefaults.buttonColors((MaterialTheme.colorScheme.tertiary))
+                    ) {
+                        Text("NO",
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 20.sp,
+                            color = Color.White,
+                        )
+                    }
+
+                }
+            }
+
+        }
+    )
+
+
 }
