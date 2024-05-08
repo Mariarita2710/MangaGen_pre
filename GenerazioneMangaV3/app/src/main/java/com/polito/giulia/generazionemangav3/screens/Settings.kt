@@ -63,6 +63,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
@@ -94,7 +95,7 @@ fun PopupBox(popupWidth: Float, popupHeight:Float, showPopup: Boolean, onClickOu
                 Box(
                     Modifier
                         .width(350.dp)
-                        .height(650.dp)
+                        .height(450.dp)
                         .background(Color.White)
                         .clip(RoundedCornerShape(4.dp)),
                     contentAlignment = Alignment.Center
@@ -239,14 +240,37 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
             Box(
 
             ){
-                IconButton(
-                    onClick = {
-                        showPopup = false
-                    }
+                //icona
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.align(alignment = Alignment.TopEnd)
                 ) {
-                    Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+                    IconButton(
+                        onClick = { showPopup = false },
+                        modifier = Modifier.padding(10.dp,0.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.size(150.dp)
+                            )
+                    }
                 }
+                //testi
 
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(text = "WARNING: This CANNOT be undone.",
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 25.sp,
+                        modifier = Modifier.padding(10.dp, 90.dp),
+                        color = Color.Red,
+                        textAlign = TextAlign.Center)
+                }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -255,14 +279,16 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                         fontFamily = fontFamily,
                         fontWeight = FontWeight.Normal,
                         fontSize = 20.sp,
-                        modifier = Modifier.padding(10.dp, 90.dp),
+                        modifier = Modifier.padding(10.dp, 180.dp),
                         color = Color.Black,
                         textAlign = TextAlign.Center)
                 }
+
+                //bottoni
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.padding(60.dp,250.dp),
+                    modifier = Modifier.padding(60.dp,10.dp).align(alignment = Alignment.BottomCenter),
 
                 ) {
                     androidx.compose.material3.Button(
@@ -272,7 +298,6 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                             fontFamily = fontFamily,
                             fontWeight = FontWeight.Normal,
                             fontSize = 20.sp,
-                            modifier = Modifier.padding(10.dp),
                             color = Color.White)
                     }
                     androidx.compose.material3.Button(
@@ -284,7 +309,6 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                             fontWeight = FontWeight.Normal,
                             fontSize = 20.sp,
                             color = Color.White,
-                            modifier = Modifier.padding(10.dp)
                             )
                     }
 
