@@ -413,7 +413,7 @@ fun ProfileHeader(navController: NavController) {
                 containerColor = MaterialTheme.colorScheme.tertiary
             ),
         ) {
-            Text("Edit profile")
+            Text("Edit favourites")
         }
     }
 }
