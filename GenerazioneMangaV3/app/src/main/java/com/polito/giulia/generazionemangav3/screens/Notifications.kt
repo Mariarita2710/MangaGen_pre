@@ -82,7 +82,7 @@ fun NotificationsScreen(viewModel: AppViewModel, navController: NavController) {
 
 
                 Text(
-                    text = "In arrivo il secondo volume di Jujutsu Kaisen!",
+                    text = "The second volume of Jujutsu Kaisen is coming tomorrow!",
                     textAlign = TextAlign.Left,
                     fontFamily = fontFamily,
                     fontWeight = FontWeight.Normal,
