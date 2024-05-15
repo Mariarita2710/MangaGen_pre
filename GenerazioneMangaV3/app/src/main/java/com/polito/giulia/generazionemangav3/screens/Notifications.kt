@@ -37,8 +37,9 @@ import com.polito.giulia.generazionemangav3.ui.theme.fontFamily
 
 @Composable
 fun NotificationsScreen(viewModel: AppViewModel, navController: NavController) {
-    var url =""
-    url = FindUrl(fileName = "Jujutsu Kaisen Cover.jpg")
+    val url1 = FindUrl(fileName = "Jujutsu Kaisen Cover.jpg")
+    val url2 = FindUrl(fileName = "One Piece Cover.jpg")
+    val url3 = FindUrl(fileName = "Spy x Family Cover.jpg")
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -75,12 +76,10 @@ fun NotificationsScreen(viewModel: AppViewModel, navController: NavController) {
                         .padding(8.dp)
                 ) {
                     AsyncImage(
-                        model = url,
+                        model = url1,
                         contentDescription = "icona",
                         contentScale = ContentScale.Crop)
                 }
-
-
                 Text(
                     text = "The second volume of Jujutsu Kaisen is coming tomorrow!",
                     textAlign = TextAlign.Left,
@@ -91,6 +90,79 @@ fun NotificationsScreen(viewModel: AppViewModel, navController: NavController) {
                     modifier = Modifier.padding(10.dp)
                 )
             }
+
+            Row(
+                Modifier
+                    .padding(20.dp)
+                    .background(MaterialTheme.colorScheme.onBackground, RoundedCornerShape(15.dp))
+                    .clip(RoundedCornerShape(15.dp))
+                    .border(
+                        2.dp,
+                        MaterialTheme.colorScheme.primary,
+                        RoundedCornerShape(15.dp)
+                    ),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ){
+                Card(
+                    shape = CircleShape,
+                    modifier = Modifier
+                        .height(70.dp)
+                        .width(70.dp)
+                        .padding(8.dp)
+                ) {
+                    AsyncImage(
+                        model = url2,
+                        contentDescription = "icona",
+                        contentScale = ContentScale.Crop)
+                }
+                Text(
+                    text = "The latest volume of One Piece is available online. Dive into it!",
+                    textAlign = TextAlign.Left,
+                    fontFamily = fontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(10.dp)
+                )
+            }
+
+            Row(
+                Modifier
+                    .padding(20.dp)
+                    .background(MaterialTheme.colorScheme.onBackground, RoundedCornerShape(15.dp))
+                    .clip(RoundedCornerShape(15.dp))
+                    .border(
+                        2.dp,
+                        MaterialTheme.colorScheme.primary,
+                        RoundedCornerShape(15.dp)
+                    ),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ){
+                Card(
+                    shape = CircleShape,
+                    modifier = Modifier
+                        .height(70.dp)
+                        .width(70.dp)
+                        .padding(8.dp)
+                ) {
+                    AsyncImage(
+                        model = url3,
+                        contentDescription = "icona",
+                        contentScale = ContentScale.Crop)
+                }
+                Text(
+                    text = "The SpyxFamily movie is finally in theaters!",
+                    textAlign = TextAlign.Left,
+                    fontFamily = fontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(10.dp)
+                )
+            }
+
         }
         
     }
