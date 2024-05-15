@@ -1,5 +1,6 @@
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -79,9 +80,16 @@ fun PopupBox(popupWidth: Float, popupHeight:Float, showPopup: Boolean, onClickOu
                 Box(
                     Modifier
                         .width(350.dp)
-                        .height(450.dp)
-                        .background(Color.White)
-                        .clip(RoundedCornerShape(4.dp)),
+                        .height(430.dp)
+                        .background(MaterialTheme.colorScheme.onBackground, RoundedCornerShape(15.dp))
+                        .clip(RoundedCornerShape(15.dp))
+                        .border(
+                            2.dp,
+                            MaterialTheme.colorScheme.primary,
+                            RoundedCornerShape(15.dp)
+                        ),
+                        /*.border(2.dp, Color.Black,RoundedCornerShape(40.dp))
+                        .clip(RoundedCornerShape(40.dp)),*/
                     contentAlignment = Alignment.Center
                 ) {
                     content()
@@ -338,7 +346,7 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Close",
-                            tint = MaterialTheme.colorScheme.tertiary,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(150.dp)
                             )
                     }
@@ -354,7 +362,7 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                         fontWeight = FontWeight.Bold,
                         fontSize = 25.sp,
                         modifier = Modifier.padding(10.dp, 90.dp),
-                        color = Color.Red,
+                        color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center)
                 }
                 Row(
@@ -366,7 +374,7 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                         fontWeight = FontWeight.Normal,
                         fontSize = 20.sp,
                         modifier = Modifier.padding(10.dp, 180.dp),
-                        color = Color.Black,
+                        color = Color.White,
                         textAlign = TextAlign.Center)
                 }
 
@@ -432,7 +440,7 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Close",
-                            tint = MaterialTheme.colorScheme.tertiary,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(150.dp)
                         )
                     }
@@ -447,7 +455,7 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                         fontWeight = FontWeight.Normal,
                         fontSize = 20.sp,
                         modifier = Modifier.padding(10.dp, 180.dp),
-                        color = Color.Black,
+                        color = Color.White,
                         textAlign = TextAlign.Center)
                 }
 

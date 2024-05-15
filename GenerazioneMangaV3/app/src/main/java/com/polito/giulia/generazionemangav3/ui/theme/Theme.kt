@@ -26,6 +26,7 @@ private val DarkColorScheme = darkColorScheme(
     outlineVariant = Indigo40,
     tertiaryContainer = Red40, // heart button
     errorContainer = Red40,
+    error = Red20,
     onErrorContainer = White00,
 )
 

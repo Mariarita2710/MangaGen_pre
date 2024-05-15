@@ -16,7 +16,7 @@ val Coral40 = Color(0xFFEE7B00) //colore dettagli, icone e bottoni
 val Coral60 = Color(0xFFDA6143) //colore evidenziazione sezione corrente
 
 val Red40 = Color(0xFFE26D7F) //cuori
-val Red20 = Color(0xFFAD1124) //colore logout
+val Red20 = Color(0xFFAC1527) //colore logout
 
 val Black00 = Color(0xFF000000) //colore scritte su sfondo impostazioni
 val Indigo40 = Color(0xFF6374D8) //colore caselle
