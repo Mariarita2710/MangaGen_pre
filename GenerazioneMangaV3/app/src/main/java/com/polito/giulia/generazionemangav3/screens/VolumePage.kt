@@ -378,6 +378,7 @@ fun MainVolumePage(viewModel: AppViewModel, navController: NavController, info: 
     }
 }
 
+//sezione che serve poi in settings: non spostare
 @Composable
 fun FlagCard(
     painter: Painter,

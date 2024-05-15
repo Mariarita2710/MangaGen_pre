@@ -118,6 +118,105 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+
+            //dati utente
+            Column(
+                modifier = Modifier.padding(20.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "User:",
+                        textAlign = TextAlign.Left,
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    Text(
+                        text = "Sarah Rossi",
+                        textAlign = TextAlign.Left,
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Username:",
+                        textAlign = TextAlign.Left,
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    Text(
+                        text = "redSarah15",
+                        textAlign = TextAlign.Left,
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Email:",
+                        textAlign = TextAlign.Left,
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    Text(
+                        text = "redsarah15@gmail.com",
+                        textAlign = TextAlign.Left,
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "UserID:",
+                        textAlign = TextAlign.Left,
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    Text(
+                        text = "1525656",
+                        textAlign = TextAlign.Left,
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
+
+
+            }
+
+            //sezione lingua
             Row(
                 modifier = Modifier.padding(20.dp)
             ) {
@@ -126,7 +225,7 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                         text = "Language App Settings:",
                         textAlign = TextAlign.Left,
                         fontFamily = fontFamily,
-                        fontWeight = FontWeight.Normal,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 20.sp,
                         color = Color.White,
                         modifier = Modifier.padding(10.dp)
@@ -156,7 +255,7 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                         text = "Notifications:",
                         textAlign = TextAlign.Left,
                         fontFamily = fontFamily,
-                        fontWeight = FontWeight.Normal,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 20.sp,
                         color = Color.White,
                         modifier = Modifier.padding(10.dp)
@@ -180,7 +279,7 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
             //sezione di logout
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(top = 300.dp)
+                modifier = Modifier.padding(top = 70.dp)
             ) {
                 Row(
                 ) {
@@ -275,7 +374,9 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.padding(60.dp,10.dp).align(alignment = Alignment.BottomCenter),
+                    modifier = Modifier
+                        .padding(60.dp, 10.dp)
+                        .align(alignment = Alignment.BottomCenter),
 
                 ) {
                     androidx.compose.material3.Button(
@@ -354,7 +455,9 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.padding(60.dp,10.dp).align(alignment = Alignment.BottomCenter),
+                    modifier = Modifier
+                        .padding(60.dp, 10.dp)
+                        .align(alignment = Alignment.BottomCenter),
 
                     ) {
                     androidx.compose.material3.Button(
