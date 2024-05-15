@@ -15,6 +15,7 @@ import com.polito.giulia.generazionemangav3.screens.MangaDetail
 import com.polito.giulia.generazionemangav3.screens.MangaPageScreen
 import com.polito.giulia.generazionemangav3.screens.MapScreen
 import com.polito.giulia.generazionemangav3.screens.MyCalendar
+import com.polito.giulia.generazionemangav3.screens.NotificationsScreen
 import com.polito.giulia.generazionemangav3.screens.PaperScreen
 import com.polito.giulia.generazionemangav3.screens.ProfileScreen
 import com.polito.giulia.generazionemangav3.screens.ReviewScreen
@@ -70,6 +71,9 @@ fun NavGraph(navController: NavHostController, viewModel: AppViewModel){
         }
         composable(route = Screen.Settings.route) {
             SettingsScreen(viewModel,navController)
+        }
+         composable(route = Screen.Notifications.route) {
+             NotificationsScreen(viewModel,navController)
         }
     }
 }
