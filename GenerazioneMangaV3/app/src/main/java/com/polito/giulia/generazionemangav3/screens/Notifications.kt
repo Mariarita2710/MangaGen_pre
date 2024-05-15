@@ -70,8 +70,8 @@ fun NotificationsScreen(viewModel: AppViewModel, navController: NavController) {
                 Card(
                     shape = CircleShape,
                     modifier = Modifier
-                        .height(60.dp)
-                        .width(60.dp)
+                        .height(70.dp)
+                        .width(70.dp)
                         .padding(8.dp)
                 ) {
                     AsyncImage(
@@ -88,7 +88,7 @@ fun NotificationsScreen(viewModel: AppViewModel, navController: NavController) {
                     fontWeight = FontWeight.Normal,
                     fontSize = 20.sp,
                     color = Color.White,
-                    modifier = Modifier.padding(15.dp)
+                    modifier = Modifier.padding(10.dp)
                 )
             }
         }
