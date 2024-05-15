@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -42,6 +43,7 @@ import com.google.android.material.datepicker.DayViewDecorator
 import com.polito.giulia.generazionemangav3.AppViewModel
 import com.polito.giulia.generazionemangav3.ui.theme.Blue40
 import com.polito.giulia.generazionemangav3.ui.theme.Coral60
+import com.polito.giulia.generazionemangav3.ui.theme.Screen
 import com.polito.giulia.generazionemangav3.ui.theme.Violet20
 import com.polito.giulia.generazionemangav3.ui.theme.Violet40
 import com.polito.giulia.generazionemangav3.ui.theme.fontFamily
@@ -192,7 +194,7 @@ fun MyCalendar(navController: NavController,viewModel: AppViewModel){
                         textAlign = TextAlign.Start,
                         fontWeight = FontWeight.Normal
                     )*/
-                    if (date == "12/3/2024") {
+                    if (date == "12/7/2024") {
                         Text(
                             text = "New Releases: ",
                             color = MaterialTheme.colorScheme.onPrimary,
@@ -201,15 +203,21 @@ fun MyCalendar(navController: NavController,viewModel: AppViewModel){
                             textAlign = TextAlign.Start,
                             fontWeight = FontWeight.Normal
                         )
-                        Text(
-                            text = "• One Piece Volume 105",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 18.sp,
-                            fontFamily = fontFamily,
-                            textAlign = TextAlign.Start,
-                            fontWeight = FontWeight.Normal
+                        TextButton(
+                            onClick = ({ viewModel.selectedManga= "One Piece";
+                                navController.navigate(Screen.MangaPage.route)}),
+                            content = {
+                                Text(
+                                    text = "• One Piece Volume 105",
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    fontSize = 18.sp,
+                                    fontFamily = fontFamily,
+                                    textAlign = TextAlign.Start,
+                                    fontWeight = FontWeight.Normal
+                                )
+                            }
                         )
-                    } else if (date == "19/3/2024") {
+                    } else if (date == "19/7/2024") {
                         Text(
                             text = "New Releases: ",
                             color = MaterialTheme.colorScheme.onPrimary,
@@ -218,15 +226,21 @@ fun MyCalendar(navController: NavController,viewModel: AppViewModel){
                             textAlign = TextAlign.Start,
                             fontWeight = FontWeight.Normal
                         )
-                        Text(
-                            text = "• Spy x Family Volume 11",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 18.sp,
-                            fontFamily = fontFamily,
-                            textAlign = TextAlign.Start,
-                            fontWeight = FontWeight.Normal
+                        TextButton(
+                            onClick = ({ viewModel.selectedManga= "Spy x Family";
+                                navController.navigate(Screen.MangaPage.route)}),
+                            content = {
+                                Text(
+                                    text = "• Spy x Family Volume 11",
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    fontSize = 18.sp,
+                                    fontFamily = fontFamily,
+                                    textAlign = TextAlign.Start,
+                                    fontWeight = FontWeight.Normal
+                                )
+                            }
                         )
-                    } else if (date == "2/4/2024") {
+                    } else if (date == "2/8/2024") {
                         Text(
                             text = "New Releases: ",
                             color = MaterialTheme.colorScheme.onPrimary,
@@ -245,7 +259,7 @@ fun MyCalendar(navController: NavController,viewModel: AppViewModel){
                             fontFamily = fontFamily,
                             fontWeight = FontWeight.Normal
                         )
-                    } else if (date == "16/4/2024") {
+                    } else if (date == "16/8/2024") {
                         Text(
                             text = "New Releases: ",
                             color = MaterialTheme.colorScheme.onPrimary,
@@ -254,13 +268,17 @@ fun MyCalendar(navController: NavController,viewModel: AppViewModel){
                             textAlign = TextAlign.Start,
                             fontWeight = FontWeight.Normal
                         )
-                        Text(
-                            text = "• Jujutsu Kaisen Volume 22",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 18.sp,
-                            fontFamily = fontFamily,
-                            textAlign = TextAlign.Start,
-                            fontWeight = FontWeight.Normal
+                        TextButton(
+                            onClick = ({ viewModel.selectedManga= "Jujutsu Kaisen - Sorcery Fight";
+                                navController.navigate(Screen.MangaPage.route)}),
+                            content = {
+                                Text(
+                                text = "• Jujutsu Kaisen Volume 22",
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                fontSize = 18.sp,
+                                fontFamily = fontFamily,
+                                textAlign = TextAlign.Start,
+                                fontWeight = FontWeight.Normal)}
                         )
                     } else {
                         Text(

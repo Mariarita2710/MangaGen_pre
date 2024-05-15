@@ -186,7 +186,7 @@ fun Chapters(navController: NavController) {
                                     /*TODO*/
                                 },
                                 colors = if (isChecked.value) {
-                                    IconButtonDefaults.iconButtonColors(contentColor = Green)
+                                    IconButtonDefaults.iconButtonColors(contentColor = Green, containerColor = Color.White)
                                 } else {
                                     IconButtonDefaults.iconButtonColors(contentColor = Color.White)
                                 }
