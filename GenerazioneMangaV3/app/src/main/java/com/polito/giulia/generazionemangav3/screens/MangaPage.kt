@@ -111,9 +111,11 @@ import com.polito.giulia.generazionemangav3.AppViewModel
 import com.polito.giulia.generazionemangav3.FindUrl
 import com.polito.giulia.generazionemangav3.R
 import com.polito.giulia.generazionemangav3.database
+import com.polito.giulia.generazionemangav3.ui.theme.Blue40
 import com.polito.giulia.generazionemangav3.ui.theme.Coral40
 import com.polito.giulia.generazionemangav3.ui.theme.Green
 import com.polito.giulia.generazionemangav3.ui.theme.Indigo40
+import com.polito.giulia.generazionemangav3.ui.theme.Indigo90
 import com.polito.giulia.generazionemangav3.ui.theme.Screen
 import com.polito.giulia.generazionemangav3.ui.theme.Violet20
 import com.polito.giulia.generazionemangav3.ui.theme.Violet40
@@ -159,6 +161,7 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
     var country=""
     var url = ""
     var numVol = 0L
+    //var review = ""
 
     sl.forEach { s ->
         plot = s.child("plot").value.toString()
@@ -168,6 +171,7 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
         publisher = s.child("publisher").value.toString()
         numVol = s.child("numVol").value as Long
         url= FindUrl(fileName = man +" Banner.jpg")
+        //review = s.child("review").value.toString()
     }
 
     Log.d("plot: ",plot)
@@ -302,7 +306,7 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "info_screen") {
                     composable("info_screen") {
-                        InfoPage(author, genre, country, publisher, plot, navController)
+                        InfoPage(author, genre, country, publisher, plot, /*review*/ navController)
                     }
                     composable("volume_screen") {
                         VolumesPage(navController = navController, numVol)
@@ -577,7 +581,7 @@ fun OptionBar() {
 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InfoPage(author: String, genre: String, country: String, publisher: String, plot: String, navController: NavController) {
+fun InfoPage(author: String, genre: String, country: String, publisher: String, plot: String, /*review: String,*/ navController: NavController) {
     var showMore by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier
@@ -670,10 +674,10 @@ fun InfoPage(author: String, genre: String, country: String, publisher: String, 
                 modifier = Modifier.padding(top = 20.dp)
             )
             val reviewValue = remember { mutableStateOf(TextFieldValue()) }
-            var openAlertDialog by remember { mutableStateOf(false) }
+            var openAlertDialog by remember { mutableStateOf(true) }
             var ctx = LocalContext.current
 
-            if (openAlertDialog){
+            /*if (openAlertDialog){
                 Popup(
                     onDismissRequest = { openAlertDialog = false },
                 ) {
@@ -798,9 +802,9 @@ fun InfoPage(author: String, genre: String, country: String, publisher: String, 
                         }
                     }
                 }
-            }
+            }*/
 
-            Row(horizontalArrangement =Arrangement.Center){
+            /*Row(horizontalArrangement =Arrangement.Center){
                 Button(onClick = {
                                  //openAlertDialog=true
                                  navController.navigate("review_screen")
@@ -816,7 +820,7 @@ fun InfoPage(author: String, genre: String, country: String, publisher: String, 
                         fontWeight = FontWeight.Normal
                     )
                 }
-                Button(onClick = { /*TODO*/ },
+                Button(onClick = { *//*TODO*//* },
                     modifier = Modifier.padding(10.dp),
                     colors = ButtonDefaults.buttonColors((MaterialTheme.colorScheme.tertiary))) {
                     Text(
@@ -829,32 +833,162 @@ fun InfoPage(author: String, genre: String, country: String, publisher: String, 
                     )
                 }
             }
+*/
+            var mostraReview by remember { mutableStateOf(false) }
 
-            Card(modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp, bottom = 120.dp),
-                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary)
-            ) {
-                Column(modifier = Modifier
+            Column(modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)) {
-                    Text(
-                        text = "Mary ★★★★☆",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontSize = 14.sp,
-                        fontFamily = fontFamily,
-                        textAlign = TextAlign.Start,
-                        fontWeight = FontWeight.Normal
-                    )
+                    .padding(2.dp)
+                    .padding(bottom = 80.dp)) {
 
-                    Text(
-                        text = "I really enjoyed reading this manhwa. Very nice story and well developed characters!",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontSize = 14.sp,
-                        fontFamily = fontFamily,
-                        textAlign = TextAlign.Start,
-                        fontWeight = FontWeight.Normal
-                    )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    //.fillMaxSize()
+                                    .padding(3.dp)
+                            ) {
+                                if (openAlertDialog) {
+
+                                    Column(modifier = Modifier.padding(2.dp)) {
+                                        OutlinedTextField(
+                                            value = reviewValue.value,
+                                            shape = MaterialTheme.shapes.large,
+                                            placeholder =
+                                            {
+                                                Text(
+                                                    text = "About this manga...",
+                                                    fontFamily = fontFamily,
+                                                    fontWeight = FontWeight.Light,
+                                                    fontSize = 18.sp,
+                                                    fontStyle = FontStyle.Italic,
+                                                    color = Color.White
+                                                )
+                                            },
+                                            onValueChange = {
+                                                reviewValue.value = it
+                                            },
+                                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                                            singleLine = false,
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                containerColor = MaterialTheme.colorScheme.onBackground,
+                                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                                focusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                                                focusedTextColor = Color.White,
+                                                unfocusedTextColor = Color.White
+                                            ),
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+
+                                    Spacer(modifier = Modifier.height(22.dp))
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(2.dp)
+                                    ) {
+                                        /*TextButton(
+                                        modifier = Modifier.width(135.dp),
+                                        shape = RoundedCornerShape(14.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Indigo90,
+                                            contentColor = MaterialTheme.colorScheme.onErrorContainer
+                                        ),
+                                        onClick = {
+                                            openAlertDialog = false
+                                        }
+                                    ) {
+                                        Text(
+                                            text = "Go back",
+                                            fontFamily = fontFamily,
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }*/
+                                        TextButton(
+                                            modifier = Modifier.width(135.dp),
+                                            shape = RoundedCornerShape(14.dp),
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                                contentColor = MaterialTheme.colorScheme.onTertiary
+                                            ),
+                                            onClick = {
+                                                Toast.makeText(
+                                                    ctx,
+                                                    "Review successfully posted!",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                mostraReview = true
+                                                openAlertDialog = false
+                                            }
+                                        ) {
+                                            Text(
+                                                text = "Post",
+                                                fontFamily = fontFamily,
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(22.dp))
+                                if(mostraReview) {
+                                    Column(Modifier.padding(bottom = 30.dp)) {
+                                        Text(
+                                            text = "redSarah15 ★★★★☆",
+                                            color = MaterialTheme.colorScheme.onPrimary,
+                                            fontSize = 14.sp,
+                                            fontFamily = fontFamily,
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.SemiBold,
+                                            modifier = Modifier.padding(start = 2.dp)
+                                        )
+                                        Card(colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
+                                            modifier = Modifier.padding(top = 8.dp)) {
+                                            // if showMore is true, the Text will expand
+                                            // Else Text will be restricted to 3 Lines of display
+                                            Box(modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(8.dp)
+                                                .animateContentSize(animationSpec = tween(100))
+                                                .clickable(
+                                                    onClickLabel = "Read more",
+                                                    interactionSource = remember { MutableInteractionSource() },
+                                                    indication = null
+                                                ) { showMore = !showMore }) {
+                                                if (showMore) {
+                                                    Text(text = reviewValue.value.text.toString())
+                                                } else {
+                                                    Text(
+                                                        text = reviewValue.value.text.toString(),
+                                                        maxLines = 5,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+
+
+            /*Text(
+                text = "Mary ★★★★☆",
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontSize = 14.sp,
+                fontFamily = fontFamily,
+                textAlign = TextAlign.Start,
+                fontWeight = FontWeight.Normal
+            )
+
+            Text(
+                text = "I really enjoyed reading this manhwa. Very nice story and well developed characters!",
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontSize = 14.sp,
+                fontFamily = fontFamily,
+                textAlign = TextAlign.Start,
+                fontWeight = FontWeight.Normal
+            )*/
                 }
             }
         }

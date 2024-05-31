@@ -572,7 +572,8 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                         Text(genre2)
                     },
                     colors = FilterChipDefaults.filterChipColors(
-                        containerColor = if (buttonStates["genre2"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
+                        containerColor = if (buttonStates["genre2"]?.value == true) Color.Gray
+                        else MaterialTheme.colorScheme.tertiary
                     ),
                     selected = selected2,
                     leadingIcon = if (selected2) {

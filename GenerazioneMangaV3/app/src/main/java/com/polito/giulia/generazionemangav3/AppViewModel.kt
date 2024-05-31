@@ -122,6 +122,9 @@ fun HomePage(viewModel: AppViewModel, navController: NavController){
                 fontFamily = fontFamily,
                 fontWeight = FontWeight.Bold
             )
+
+
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
