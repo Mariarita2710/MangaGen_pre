@@ -306,7 +306,7 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "info_screen") {
                     composable("info_screen") {
-                        InfoPage(author, genre, country, publisher, plot, /*review*/ navController)
+                        InfoPage(author, genre, country, publisher, plot, /*review*/ navController, man)
                     }
                     composable("volume_screen") {
                         VolumesPage(navController = navController, numVol)
@@ -581,7 +581,7 @@ fun OptionBar() {
 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InfoPage(author: String, genre: String, country: String, publisher: String, plot: String, /*review: String,*/ navController: NavController) {
+fun InfoPage(author: String, genre: String, country: String, publisher: String, plot: String, navController: NavController, manga: String) {
     var showMore by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier
@@ -663,6 +663,27 @@ fun InfoPage(author: String, genre: String, country: String, publisher: String, 
                 }
             }
         }
+
+        //Reviews
+        var revList by remember { mutableStateOf<List<String>>(emptyList()) }
+        var revs= database.child("manga").child(manga).child("reviews")
+        revs.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+                // Itera sui figli del nodo
+                var list= mutableListOf<String>()
+
+                for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                    // Aggiungi il prodotto alla lista
+                    list.add(childSnapshot.value.toString())
+                }
+                revList=list
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Gestisci gli errori qui
+                println("Errore nel leggere i dati dal database: ${databaseError.message}")
+            }
+        })
+
         Column {
             Text(
                 text = "Reviews",
@@ -919,7 +940,10 @@ fun InfoPage(author: String, genre: String, country: String, publisher: String, 
                                                     Toast.LENGTH_SHORT
                                                 ).show()
                                                 mostraReview = true
-                                                openAlertDialog = false
+                                                addToReview(manga, reviewValue.value.text)
+                                                Log.d("manga: ", manga)
+                                                Log.d("rece: ", reviewValue.value.text)
+                                                //openAlertDialog = false
                                             }
                                         ) {
                                             Text(
@@ -932,43 +956,53 @@ fun InfoPage(author: String, genre: String, country: String, publisher: String, 
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(22.dp))
-                                if(mostraReview) {
+                                    Log.d("revs:", revList.toString())
                                     Column(Modifier.padding(bottom = 30.dp)) {
-                                        Text(
-                                            text = "redSarah15 ★★★★☆",
-                                            color = MaterialTheme.colorScheme.onPrimary,
-                                            fontSize = 14.sp,
-                                            fontFamily = fontFamily,
-                                            textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.SemiBold,
-                                            modifier = Modifier.padding(start = 2.dp)
-                                        )
-                                        Card(colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
-                                            modifier = Modifier.padding(top = 8.dp)) {
-                                            // if showMore is true, the Text will expand
-                                            // Else Text will be restricted to 3 Lines of display
-                                            Box(modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(8.dp)
-                                                .animateContentSize(animationSpec = tween(100))
-                                                .clickable(
-                                                    onClickLabel = "Read more",
-                                                    interactionSource = remember { MutableInteractionSource() },
-                                                    indication = null
-                                                ) { showMore = !showMore }) {
-                                                if (showMore) {
-                                                    Text(text = reviewValue.value.text.toString())
-                                                } else {
-                                                    Text(
-                                                        text = reviewValue.value.text.toString(),
-                                                        maxLines = 5,
-                                                        overflow = TextOverflow.Ellipsis
-                                                    )
+                                        revList.forEach() {
+                                                Text(
+                                                    text = "redSarah15",
+                                                    color = MaterialTheme.colorScheme.onPrimary,
+                                                    fontSize = 14.sp,
+                                                    fontFamily = fontFamily,
+                                                    textAlign = TextAlign.Start,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    modifier = Modifier.padding(start = 2.dp)
+                                                )
+                                                Card(
+                                                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
+                                                    modifier = Modifier.padding(top = 8.dp)
+                                                ) {
+                                                    // if showMore is true, the Text will expand
+                                                    // Else Text will be restricted to 3 Lines of display
+                                                    Box(modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(8.dp)
+                                                        .animateContentSize(
+                                                            animationSpec = tween(
+                                                                100
+                                                            )
+                                                        )
+                                                        .clickable(
+                                                            onClickLabel = "Read more",
+                                                            interactionSource = remember { MutableInteractionSource() },
+                                                            indication = null
+                                                        ) { showMore = !showMore }) {
+                                                        if (showMore) {
+                                                            Text(text = it)
+                                                        } else {
+                                                            Log.d("revs:", it)
+                                                            Text(
+                                                                text = it,
+                                                                maxLines = 5,
+                                                                overflow = TextOverflow.Ellipsis
+                                                            )
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-                                }
+
 
 
 
@@ -994,7 +1028,7 @@ fun InfoPage(author: String, genre: String, country: String, publisher: String, 
         }
 
     }
-    }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -1253,6 +1287,32 @@ fun addToEditors(editors: String, id: String){
             else{
                 val favouriteMap = mapOf(lastKey.toString() to editors)
                 database.child("users").child(id).child("publishers").setValue(favouriteMap)
+            }
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            println("Cannot read data from database: ${databaseError.message}")
+        }
+    })
+}
+
+fun addToReview(manga: String, review: String){
+
+    var revs= database.child("manga").child(manga).child("reviews")
+    revs.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+            var lastKey = 0
+            if(dataSnapshot.exists()){
+
+                for (childSnapshot in dataSnapshot.children) {
+                    val i = childSnapshot.key?.toInt() ?: 0
+                    lastKey= i+1
+                    println("LastKey: "+lastKey)
+                }
+                database.child("manga").child(manga).child("reviews").child(lastKey.toString()).setValue(review)
+            }
+            else{
+                val revMap = mapOf(lastKey.toString() to review)
+                database.child("manga").child(manga).child("reviews").setValue(revMap)
             }
         }
         override fun onCancelled(databaseError: DatabaseError) {
