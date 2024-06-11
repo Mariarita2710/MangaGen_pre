@@ -1269,7 +1269,24 @@ fun addToAuthors(authors: String, id: String){
     })
 }
 
-fun addToEditors(editors: String, id: String){
+fun removeFromAuthors(author: String, id: String){
+
+    var favourites= database.child("users").child(id).child("authors")
+    favourites.addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+            for (childSnapshot in dataSnapshot.children) {
+                if(childSnapshot.value.toString()==author){
+                    childSnapshot.ref.removeValue()
+                }
+            }
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            println("Cannot read data from database: ${databaseError.message}")
+        }
+    })
+}
+
+fun addToPublishers(publisher: String, id: String){
 
     var favourites= database.child("users").child(id).child("publishers")
     favourites.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
@@ -1282,11 +1299,28 @@ fun addToEditors(editors: String, id: String){
                     lastKey= i+1
                     println("LastKey: "+lastKey)
                 }
-                database.child("users").child(id).child("publishers").child(lastKey.toString()).setValue(editors)
+                database.child("users").child(id).child("publishers").child(lastKey.toString()).setValue(publisher)
             }
             else{
-                val favouriteMap = mapOf(lastKey.toString() to editors)
+                val favouriteMap = mapOf(lastKey.toString() to publisher)
                 database.child("users").child(id).child("publishers").setValue(favouriteMap)
+            }
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            println("Cannot read data from database: ${databaseError.message}")
+        }
+    })
+}
+
+fun removeFromPublishers(publisher: String, id: String){
+
+    var favourites= database.child("users").child(id).child("publishers")
+    favourites.addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+            for (childSnapshot in dataSnapshot.children) {
+                if(childSnapshot.value.toString()==publisher){
+                    childSnapshot.ref.removeValue()
+                }
             }
         }
         override fun onCancelled(databaseError: DatabaseError) {

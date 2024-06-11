@@ -78,6 +78,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -90,6 +91,8 @@ import com.google.firebase.database.values
 import com.polito.giulia.generazionemangav3.FindUrl
 import com.polito.giulia.generazionemangav3.R
 import com.polito.giulia.generazionemangav3.database
+import com.polito.giulia.generazionemangav3.ui.theme.Green
+import com.polito.giulia.generazionemangav3.ui.theme.Red20
 import com.polito.giulia.generazionemangav3.ui.theme.Violet20
 import com.polito.giulia.generazionemangav3.ui.theme.Violet40
 
@@ -426,6 +429,15 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
     var selected1 by remember { mutableStateOf(false) }
     var selected2 by remember { mutableStateOf(false) }
     var selected3 by remember { mutableStateOf(false) }
+
+    var selected1a by remember { mutableStateOf(false) }
+    var selected2a by remember { mutableStateOf(false) }
+    var selected3a by remember { mutableStateOf(false) }
+
+    var selected1p by remember { mutableStateOf(false) }
+    var selected2p by remember { mutableStateOf(false) }
+    var selected3p by remember { mutableStateOf(false) }
+
     val genres = database.child("users").child("1").child("genres")
     Log.d("generi: ",genres.toString())
 
@@ -436,9 +448,9 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
     var author1= "Isayama"
     var author2="One"
     var author3="Urasawa"
-    var editor1= "Jpop"
-    var editor2="Panini"
-    var editor3="Dynit"
+    var publisher1= "Jpop"
+    var publisher2="Panini"
+    var publisher3="Dynit"
 
     val buttonStates = remember {
         mapOf(
@@ -448,9 +460,9 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
             "author1" to mutableStateOf(false),
             "author2" to mutableStateOf(false),
             "author3" to mutableStateOf(false),
-            "editor1" to mutableStateOf(false),
-            "editor2" to mutableStateOf(false),
-            "editor3" to mutableStateOf(false),
+            "publisher1" to mutableStateOf(false),
+            "publisher2" to mutableStateOf(false),
+            "publisher3" to mutableStateOf(false),
         )
     }
 
@@ -466,6 +478,44 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                 list.add(childSnapshot.value.toString())
             }
             favouriteGenresList=list
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            // Gestisci gli errori qui
+            println("Errore nel leggere i dati dal database: ${databaseError.message}")
+        }
+    })
+
+    var favouritesAuthorsList by remember { mutableStateOf<List<String>>(emptyList()) }
+    var favouritesAuthors= database.child("users").child("1").child("authors")
+    favouritesAuthors.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+            // Itera sui figli del nodo
+            var list= mutableListOf<String>()
+
+            for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                // Aggiungi il prodotto alla lista
+                list.add(childSnapshot.value.toString())
+            }
+            favouritesAuthorsList=list
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            // Gestisci gli errori qui
+            println("Errore nel leggere i dati dal database: ${databaseError.message}")
+        }
+    })
+
+    var favouritesPublishersList by remember { mutableStateOf<List<String>>(emptyList()) }
+    var favouritesPublishers= database.child("users").child("1").child("publishers")
+    favouritesPublishers.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+            // Itera sui figli del nodo
+            var list= mutableListOf<String>()
+
+            for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                // Aggiungi il prodotto alla lista
+                list.add(childSnapshot.value.toString())
+            }
+            favouritesPublishersList=list
         }
         override fun onCancelled(databaseError: DatabaseError) {
             // Gestisci gli errori qui
@@ -547,29 +597,32 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                 var isEnabled by remember { mutableStateOf(true) }
                 FilterChip(
                     onClick = {
-                        Log.d("genere 1 c'è: ", favouriteGenresList.contains(genre1).toString() )
-                            selected1 = !selected1
-                        if (selected1 && favouriteGenresList.contains(genre1)==false) {
-                                buttonStates["genre1"]?.value =
-                                    !(buttonStates["genre1"]?.value ?: false)
-                                addToGenres(genre1, "1")
+                        Log.d("genere 1 c'è: ", favouriteGenresList.contains(genre1).toString())
+                        selected1 = !selected1
+                        if (selected1 && favouriteGenresList.contains(genre1) == false) {
+                            buttonStates["genre1"]?.value =
+                                !(buttonStates["genre1"]?.value ?: false)
+                            addToGenres(genre1, "1")
 
-                            } else {
-                                buttonStates["genre1"]?.value =
-                            !(buttonStates["genre1"]?.value ?: true)
-                            removeFromGenres(genre1,"1")
-                            }
-                              },
+                        } else {
+                            buttonStates["genre1"]?.value =
+                                !(buttonStates["genre1"]?.value ?: true)
+                            removeFromGenres(genre1, "1")
+                        }
+                    },
                     label = {
                         Text(genre1)
                     },
                     colors = FilterChipDefaults.filterChipColors(
-                        containerColor = if (buttonStates["genre1"]?.value == true && favouriteGenresList.contains(genre1) && selected1) Color.Gray
+                        containerColor = if (buttonStates["genre1"]?.value == true
+                            || favouriteGenresList.contains(genre1)
+                            || selected1
+                        ) Color.Gray
                         else if (!favouriteGenresList.contains(genre1)) MaterialTheme.colorScheme.tertiary
-                        else Color.Gray
+                        else MaterialTheme.colorScheme.tertiary,
                     ),
-                    selected = if(!favouriteGenresList.contains(genre1)) selected1 else !selected1,
-                    leadingIcon = if (selected1 && favouriteGenresList.contains(genre1)) {
+                    selected = if (!favouriteGenresList.contains(genre1) || buttonStates["genre1"]?.value == true) selected1 else !selected1,
+                    leadingIcon = if (selected1 || favouriteGenresList.contains(genre1) || buttonStates["genre1"]?.value == true) {
                         {
                             Icon(
                                 imageVector = Icons.Filled.Check,
@@ -582,27 +635,32 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                     },
                 )
                 FilterChip(
-                    onClick = { selected2 = !selected2
-                        if (selected2) {
+                    onClick = {
+                        selected2 = !selected2
+                        if (selected2 && favouriteGenresList.contains(genre2) == false) {
                             buttonStates["genre2"]?.value =
                                 !(buttonStates["genre2"]?.value ?: false)
                             addToGenres(genre2, "1")
+
                         } else {
                             buttonStates["genre2"]?.value =
                                 !(buttonStates["genre2"]?.value ?: true)
-                            removeFromGenres(genre2,"1")
-
+                            removeFromGenres(genre2, "1")
                         }
                     },
                     label = {
                         Text(genre2)
                     },
                     colors = FilterChipDefaults.filterChipColors(
-                        containerColor = if (buttonStates["genre2"]?.value == true) Color.Gray
+                        containerColor = if (buttonStates["genre2"]?.value == true
+                            || favouriteGenresList.contains(genre2)
+                            || selected2
+                        ) Color.Gray
+                        else if (!favouriteGenresList.contains(genre2)) MaterialTheme.colorScheme.tertiary
                         else MaterialTheme.colorScheme.tertiary
                     ),
-                    selected = selected2,
-                    leadingIcon = if (selected2) {
+                    selected = if (!favouriteGenresList.contains(genre2) || buttonStates["genre2"]?.value == true) selected2 else !selected2,
+                    leadingIcon = if (selected2 || favouriteGenresList.contains(genre2) || buttonStates["genre2"]?.value == true) {
                         {
                             Icon(
                                 imageVector = Icons.Filled.Check,
@@ -615,8 +673,9 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                     },
                 )
                 FilterChip(
-                    onClick = { selected3 = !selected3
-                        if (selected3) {
+                    onClick = {
+                        selected3 = !selected3
+                        if (selected3 && favouriteGenresList.contains(genre3) == false) {
                             buttonStates["genre3"]?.value =
                                 !(buttonStates["genre3"]?.value ?: false)
                             addToGenres(genre3, "1")
@@ -624,7 +683,7 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                         } else {
                             buttonStates["genre3"]?.value =
                                 !(buttonStates["genre3"]?.value ?: true)
-                            removeFromGenres(genre3,"1")
+                            removeFromGenres(genre3, "1")
 
                         }
                     },
@@ -632,10 +691,15 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                         Text(genre3)
                     },
                     colors = FilterChipDefaults.filterChipColors(
-                        containerColor = if (buttonStates["genre3"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
+                        containerColor = if (buttonStates["genre3"]?.value == true
+                            || favouriteGenresList.contains(genre3)
+                            || selected3
+                        ) Color.Gray
+                        else if (!favouriteGenresList.contains(genre3)) MaterialTheme.colorScheme.tertiary
+                        else MaterialTheme.colorScheme.tertiary
                     ),
-                    selected = selected3,
-                    leadingIcon = if (selected3) {
+                    selected = if (!favouriteGenresList.contains(genre3) || buttonStates["genre3"]?.value == true) selected3 else !selected3,
+                    leadingIcon = if (selected3 || favouriteGenresList.contains(genre3) || buttonStates["genre3"]?.value == true) {
                         {
                             Icon(
                                 imageVector = Icons.Filled.Check,
@@ -658,7 +722,126 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Button(
+
+                FilterChip(
+                    onClick = {
+                        Log.d("autore 1 c'è: ", favouritesAuthorsList.contains(author1).toString())
+                        selected1a = !selected1a
+                        if (selected1a && favouritesAuthorsList.contains(genre1) == false) {
+                            buttonStates["author1"]?.value =
+                                !(buttonStates["author1"]?.value ?: false)
+                            addToAuthors(author1, "1")
+
+                        } else {
+                            buttonStates["author1"]?.value =
+                                !(buttonStates["author1"]?.value ?: true)
+                            removeFromAuthors(author1, "1")
+                        }
+                    },
+                    label = {
+                        Text(author1)
+                    },
+                    colors = FilterChipDefaults.filterChipColors(
+                        containerColor = if (buttonStates["author1"]?.value == true
+                            || favouritesAuthorsList.contains(author1)
+                            || selected1a
+                        ) Color.Gray
+                        else if (!favouritesAuthorsList.contains(author1)) MaterialTheme.colorScheme.tertiary
+                        else MaterialTheme.colorScheme.tertiary,
+                    ),
+                    selected = if (!favouritesAuthorsList.contains(author1) || buttonStates["author1"]?.value == true) selected1a else !selected1a,
+                    leadingIcon = if (selected1a || favouritesAuthorsList.contains(author1) || buttonStates["author1"]?.value == true) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = "Done icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                )
+                FilterChip(
+                    onClick = {
+                        selected2a = !selected2a
+                        if (selected2a && favouritesAuthorsList.contains(author2) == false) {
+                            buttonStates["author2"]?.value =
+                                !(buttonStates["author2"]?.value ?: false)
+                            addToAuthors(author2, "1")
+
+                        } else {
+                            buttonStates["author2"]?.value =
+                                !(buttonStates["author2"]?.value ?: true)
+                            removeFromAuthors(author2, "1")
+                        }
+                    },
+                    label = {
+                        Text(author2)
+                    },
+                    colors = FilterChipDefaults.filterChipColors(
+                        containerColor = if (buttonStates["author2"]?.value == true
+                            || favouritesAuthorsList.contains(author2)
+                            || selected2a
+                        ) Color.Gray
+                        else if (!favouritesAuthorsList.contains(author2)) MaterialTheme.colorScheme.tertiary
+                        else MaterialTheme.colorScheme.tertiary
+                    ),
+                    selected = if (!favouritesAuthorsList.contains(author2) || buttonStates["author2"]?.value == true) selected2a else !selected2a,
+                    leadingIcon = if (selected2a || favouritesAuthorsList.contains(author2) || buttonStates["author2"]?.value == true) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = "Done icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                )
+                FilterChip(
+                    onClick = {
+                        selected3a = !selected3a
+                        if (selected3a && favouritesAuthorsList.contains(author3) == false) {
+                            buttonStates["author3"]?.value =
+                                !(buttonStates["author3"]?.value ?: false)
+                            addToAuthors(author3, "1")
+
+                        } else {
+                            buttonStates["author3"]?.value =
+                                !(buttonStates["author3"]?.value ?: true)
+                            removeFromAuthors(author3, "1")
+
+                        }
+                    },
+                    label = {
+                        Text(author3)
+                    },
+                    colors = FilterChipDefaults.filterChipColors(
+                        containerColor = if (buttonStates["author3"]?.value == true
+                            || favouritesAuthorsList.contains(author3)
+                            || selected3a
+                        ) Color.Gray
+                        else if (!favouritesAuthorsList.contains(author3)) MaterialTheme.colorScheme.tertiary
+                        else MaterialTheme.colorScheme.tertiary
+                    ),
+                    selected = if (!favouritesAuthorsList.contains(author3) || buttonStates["author3"]?.value == true) selected3a else !selected3a,
+                    leadingIcon = if (selected3a || favouritesAuthorsList.contains(author3) || buttonStates["author3"]?.value == true) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = "Done icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                )
+            }
+
+                /*Button(
                     onClick = { buttonStates["author1"]?.value = !(buttonStates["author1"]?.value ?: false)
                         addToAuthors(author1,"1") },
                     colors = ButtonDefaults.buttonColors(
@@ -685,74 +868,207 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                 )  {
                     Text(author3)
                 }
-            }
-            Text(
-                text = "Favourite publishers: ",
-                color = MaterialTheme.colorScheme.onPrimary,
-                fontFamily = fontFamily
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Button(
-                    onClick = { buttonStates["editor1"]?.value = !(buttonStates["editor1"]?.value ?: false)
-                        addToEditors(editor1,"1")
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (buttonStates["editor1"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
-                    ),
-                ) {
-                    Text(editor1)
-                }
-                Button(
-                    onClick = { buttonStates["editor2"]?.value = !(buttonStates["editor2"]?.value ?: false)
-                        addToEditors(editor2,"1")
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (buttonStates["editor2"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
-                    ),
-                ) {
-                    Text(editor2)
-                }
-                Button(
-                    onClick = { buttonStates["editor3"]?.value = !(buttonStates["editor3"]?.value ?: false)
-                        addToEditors(editor3,"1")
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (buttonStates["editor3"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
-                    ),
-                )  {
-                    Text(editor3)
-                }
-            }
+            }*/
 
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 280.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                val context= LocalContext.current
-                Button(
-                    onClick = { navController.navigate("profile_screen")
-                    Toast.makeText(context, "choices saved successfully", Toast.LENGTH_SHORT).show()},
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
-                    ),
+                Text(
+                    text = "Favourite publishers: ",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontFamily = fontFamily
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text("save")
+                    FilterChip(
+                        onClick = {
+                            Log.d(
+                                "editore 1 c'è: ",
+                                favouritesPublishersList.contains(publisher1).toString()
+                            )
+                            selected1p = !selected1p
+                            if (selected1p && favouritesPublishersList.contains(publisher1) == false) {
+                                buttonStates["publisher1"]?.value =
+                                    !(buttonStates["publisher1"]?.value ?: false)
+                                addToPublishers(publisher1, "1")
+
+                            } else {
+                                buttonStates["publisher1"]?.value =
+                                    !(buttonStates["publisher1"]?.value ?: true)
+                                removeFromPublishers(publisher1, "1")
+                            }
+                        },
+                        label = {
+                            Text(publisher1)
+                        },
+                        colors = FilterChipDefaults.filterChipColors(
+                            containerColor = if (buttonStates["publisher1"]?.value == true
+                                || favouritesPublishersList.contains(publisher1)
+                                || selected1p
+                            ) Color.Gray
+                            else if (!favouritesPublishersList.contains(publisher1)) MaterialTheme.colorScheme.tertiary
+                            else MaterialTheme.colorScheme.tertiary,
+                        ),
+                        selected = if (!favouritesPublishersList.contains(publisher1) || buttonStates["publisher1"]?.value == true) selected1p else !selected1p,
+                        leadingIcon = if (selected1p || favouritesPublishersList.contains(publisher1) || buttonStates["publisher1"]?.value == true) {
+                            {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = "Done icon",
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                )
+                            }
+                        } else {
+                            null
+                        },
+                    )
+                    FilterChip(
+                        onClick = {
+                            selected2p = !selected2p
+                            if (selected2p && favouritesPublishersList.contains(publisher2) == false) {
+                                buttonStates["publisher2"]?.value =
+                                    !(buttonStates["publisher2"]?.value ?: false)
+                                addToPublishers(publisher2, "1")
+
+                            } else {
+                                buttonStates["author2"]?.value =
+                                    !(buttonStates["pulisher2"]?.value ?: true)
+                                removeFromPublishers(publisher2, "1")
+                            }
+                        },
+                        label = {
+                            Text(publisher2)
+                        },
+                        colors = FilterChipDefaults.filterChipColors(
+                            containerColor = if (buttonStates["publisher2"]?.value == true
+                                || favouritesPublishersList.contains(publisher2)
+                                || selected2p
+                            ) Color.Gray
+                            else if (!favouritesPublishersList.contains(publisher2)) MaterialTheme.colorScheme.tertiary
+                            else MaterialTheme.colorScheme.tertiary
+                        ),
+                        selected = if (!favouritesPublishersList.contains(publisher2) || buttonStates["publisher2"]?.value == true) selected2p else !selected2p,
+                        leadingIcon = if (selected2p || favouritesPublishersList.contains(publisher2) || buttonStates["publisher2"]?.value == true) {
+                            {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = "Done icon",
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                )
+                            }
+                        } else {
+                            null
+                        },
+                    )
+                    FilterChip(
+                        onClick = {
+                            selected3p = !selected3p
+                            if (selected3p && favouritesPublishersList.contains(publisher3) == false) {
+                                buttonStates["publisher3"]?.value =
+                                    !(buttonStates["publisher3"]?.value ?: false)
+                                addToPublishers(publisher3, "1")
+
+                            } else {
+                                buttonStates["publisher3"]?.value =
+                                    !(buttonStates["publisher3"]?.value ?: true)
+                                removeFromPublishers(publisher3, "1")
+
+                            }
+                        },
+                        label = {
+                            Text(publisher3)
+                        },
+                        colors = FilterChipDefaults.filterChipColors(
+                            containerColor = if (buttonStates["publisher3"]?.value == true
+                                || favouritesPublishersList.contains(publisher3)
+                                || selected3p
+                            ) Color.Gray
+                            else if (!favouritesPublishersList.contains(publisher3)) MaterialTheme.colorScheme.tertiary
+                            else MaterialTheme.colorScheme.tertiary
+                        ),
+                        selected = if (!favouritesPublishersList.contains(publisher3) || buttonStates["publisher3"]?.value == true) selected3p else !selected3p,
+                        leadingIcon = if (selected3p || favouritesPublishersList.contains(publisher3) || buttonStates["publisher3"]?.value == true) {
+                            {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = "Done icon",
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                )
+                            }
+                        } else {
+                            null
+                        },
+                    )
                 }
-                Button(
-                    onClick = { navController.navigate("profile_screen") },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Gray
-                    ),
+                   /* Button(
+                        onClick = {
+                            buttonStates["editor1"]?.value =
+                                !(buttonStates["editor1"]?.value ?: false)
+                            addToEditors(editor1, "1")
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (buttonStates["editor1"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
+                        ),
+                    ) {
+                        Text(editor1)
+                    }
+                    Button(
+                        onClick = {
+                            buttonStates["editor2"]?.value =
+                                !(buttonStates["editor2"]?.value ?: false)
+                            addToEditors(editor2, "1")
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (buttonStates["editor2"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
+                        ),
+                    ) {
+                        Text(editor2)
+                    }
+                    Button(
+                        onClick = {
+                            buttonStates["editor3"]?.value =
+                                !(buttonStates["editor3"]?.value ?: false)
+                            addToEditors(editor3, "1")
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (buttonStates["editor3"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
+                        ),
+                    ) {
+                        Text(editor3)
+                    }*/
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 280.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text("cancel")
+                    val context = LocalContext.current
+                    Button(
+                        onClick = {
+                            navController.navigate("profile_screen")
+                            Toast.makeText(
+                                context,
+                                "choices saved successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        },
+                        shape = ButtonDefaults.elevatedShape,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary
+                        ),
+                    ) {
+                        Text("save")
+                    }
+                    Button(
+                        onClick = { navController.navigate("profile_screen") },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Gray
+                        ),
+                    ) {
+                        Text("cancel")
+                    }
                 }
             }
         }
     }
-}
 
