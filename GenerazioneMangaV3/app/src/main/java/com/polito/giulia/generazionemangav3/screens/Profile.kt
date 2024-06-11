@@ -1,5 +1,6 @@
 package com.polito.giulia.generazionemangav3.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
@@ -84,6 +85,8 @@ import coil.compose.AsyncImage
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.snapshots
+import com.google.firebase.database.values
 import com.polito.giulia.generazionemangav3.FindUrl
 import com.polito.giulia.generazionemangav3.R
 import com.polito.giulia.generazionemangav3.database
@@ -201,7 +204,7 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
             ) {
 
                     Text(
-                        text = " Favourite genres: " + favouriteGenresList,//dopo il più in teoria ci andrebbe tipo una funzione
+                        text = " Favourite genres: " + favouriteGenresList.joinToString(", "),//dopo il più in teoria ci andrebbe tipo una funzione
                         //che fa cambiare il testo a seconda delle cose che vengono scelte quando si fa edit prof
                         //quindi da aggiungere in post
                         color = MaterialTheme.colorScheme.onPrimary,
@@ -209,13 +212,13 @@ fun Profile(navController: NavController,viewModel: AppViewModel,modifier: Modif
                         modifier = Modifier.padding(8.dp)
                     )
                     Text(
-                        text = " Favourite authors: " + favouritesAuthorsList,
+                        text = " Favourite authors: " + favouritesAuthorsList.joinToString(", "),
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontFamily = fontFamily,
                         modifier = Modifier.padding(8.dp)
                     )
                     Text(
-                        text = " Favourite publishers: " + favouritesEditorsList,
+                        text = " Favourite publishers: " + favouritesEditorsList.joinToString(", "),
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontFamily = fontFamily,
                         modifier = Modifier.padding(8.dp)
@@ -424,6 +427,7 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
     var selected2 by remember { mutableStateOf(false) }
     var selected3 by remember { mutableStateOf(false) }
     val genres = database.child("users").child("1").child("genres")
+    Log.d("generi: ",genres.toString())
 
     // val color = if (selected1 || selected2 || selected3) Color.Gray else MaterialTheme.colorScheme.tertiary
     var genre1="Drama"
@@ -449,6 +453,26 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
             "editor3" to mutableStateOf(false),
         )
     }
+
+    var favouriteGenresList by remember { mutableStateOf<List<String>>(emptyList()) }
+    var favouritesGenres = database.child("users").child("1").child("genres")
+    favouritesGenres.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) { //fa una foto al db in quel momento e la mette in dataSnapshot
+            // Itera sui figli del nodo
+            var list= mutableListOf<String>()
+
+            for (childSnapshot in dataSnapshot.children) { //prende i figli di prodotti, quindi 0, 1...
+                // Aggiungi il prodotto alla lista
+                list.add(childSnapshot.value.toString())
+            }
+            favouriteGenresList=list
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            // Gestisci gli errori qui
+            println("Errore nel leggere i dati dal database: ${databaseError.message}")
+        }
+    })
+
 
     Box(
         modifier = Modifier
@@ -523,27 +547,29 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                 var isEnabled by remember { mutableStateOf(true) }
                 FilterChip(
                     onClick = {
+                        Log.d("genere 1 c'è: ", favouriteGenresList.contains(genre1).toString() )
                             selected1 = !selected1
-                            if (selected1) {
+                        if (selected1 && favouriteGenresList.contains(genre1)==false) {
                                 buttonStates["genre1"]?.value =
                                     !(buttonStates["genre1"]?.value ?: false)
                                 addToGenres(genre1, "1")
 
                             } else {
                                 buttonStates["genre1"]?.value =
-                                    !(buttonStates["genre1"]?.value ?: true)
-                                removeFromGenres(genre1,"1")
+                            !(buttonStates["genre1"]?.value ?: true)
+                            removeFromGenres(genre1,"1")
                             }
                               },
                     label = {
                         Text(genre1)
                     },
-
                     colors = FilterChipDefaults.filterChipColors(
-                        containerColor = if (buttonStates["genre1"]?.value == true) Color.Gray else MaterialTheme.colorScheme.tertiary
+                        containerColor = if (buttonStates["genre1"]?.value == true && favouriteGenresList.contains(genre1) && selected1) Color.Gray
+                        else if (!favouriteGenresList.contains(genre1)) MaterialTheme.colorScheme.tertiary
+                        else Color.Gray
                     ),
-                    selected = selected1,
-                    leadingIcon = if (selected1) {
+                    selected = if(!favouriteGenresList.contains(genre1)) selected1 else !selected1,
+                    leadingIcon = if (selected1 && favouriteGenresList.contains(genre1)) {
                         {
                             Icon(
                                 imageVector = Icons.Filled.Check,
@@ -661,7 +687,7 @@ fun EditProfile(viewModel: AppViewModel, navController: NavController) {
                 }
             }
             Text(
-                text = "Favourite editors: ",
+                text = "Favourite publishers: ",
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontFamily = fontFamily
             )
