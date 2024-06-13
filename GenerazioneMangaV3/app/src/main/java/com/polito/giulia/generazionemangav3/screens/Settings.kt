@@ -312,7 +312,7 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
                 }
                 Row() {
                     androidx.compose.material3.Text(
-                        text = "Delete your account",
+                        text = "Delete account",
                         color = Color.White,
                         fontSize = 16.sp,
                         fontFamily = fontFamily,
