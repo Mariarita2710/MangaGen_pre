@@ -360,7 +360,7 @@ fun MainVolumePage(viewModel: AppViewModel, navController: NavController, info: 
                                 }
 
                       },
-                    modifier = Modifier.padding(top = 10.dp, bottom = 100.dp, start = 250.dp),
+                    modifier = Modifier.padding(top = 10.dp, bottom = 100.dp, start = 230.dp),
                     colors = ButtonDefaults.buttonColors((androidx.compose.material3.MaterialTheme.colorScheme.tertiary))
                 ) {
                     androidx.compose.material3.Text(

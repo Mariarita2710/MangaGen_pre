@@ -990,7 +990,8 @@ fun MangaListSearch(viewModel: AppViewModel, searchText: String, navController: 
 
     // Mostra solo i manga che corrispondono al testo di ricerca
     Column (verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.verticalScroll(rememberScrollState())){
+        modifier = Modifier.verticalScroll(rememberScrollState())
+            .padding(bottom = 70.dp)){
 
         filteredMangaList.forEach { manga ->
             Row(

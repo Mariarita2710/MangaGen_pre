@@ -114,7 +114,7 @@ fun SettingsScreen(viewModel: AppViewModel, navController: NavController) {
 
     Box(modifier = Modifier
         .fillMaxSize()
-        .padding(top = 70.dp)
+        .padding(top = 70.dp, bottom = 60.dp)
         .background(
             brush = Brush.linearGradient(
                 colors = listOf(

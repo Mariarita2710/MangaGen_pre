@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -50,7 +52,8 @@ fun MapScreen(viewModel: AppViewModel, navController: NavController) {
         contentAlignment = Alignment.Center
     ){
         Column(horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.verticalScroll(rememberScrollState()).padding(bottom = 90.dp)) {
             Text(
                 text = "Map",
                 modifier = Modifier.padding(top = 40.dp) ,

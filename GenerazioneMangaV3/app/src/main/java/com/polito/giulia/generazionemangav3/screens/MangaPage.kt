@@ -1,6 +1,7 @@
 package com.polito.giulia.generazionemangav3.screens
 
 import android.annotation.SuppressLint
+import android.text.Layout
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -186,13 +188,13 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
             content =
             """
                     {
-                        bgCard: {
-                          bottom: ['parent', 'bottom']
-                        },
-                        arrowBack: {
-                          top: ['mangaTitle','top'],
+                    arrowBack: {
+                          top: ['banner','top'],
                           bottom: ['bgCard', 'top'],
                           left: ['parent', 'top']
+                        },
+                        bgCard: {
+                          bottom: ['parent', 'bottom']
                         },
                         mangaTitle: {
                           top: ['bgCard', 'top'],
@@ -222,30 +224,33 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
             )
             //.background(MaterialTheme.colorScheme.primary)
     ) {
+        AsyncImage(
+            model=url,
+            contentDescription = "Manga banner",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .layoutId("banner")
+                .fillMaxSize()
+             .padding(bottom = 250.dp),
+            alpha = 0.35F
+        )
+
         IconButton(
             modifier = Modifier
-               .layoutId("arrowBack") ,
+               .layoutId("arrowBack").size(40.dp),
             onClick = {
                 navController.navigate(Screen.Search.route)
                 Log.d("vwghsfwghf", "gksjnf")
             },
-            colors = IconButtonDefaults.iconButtonColors(contentColor = androidx.compose.material3.MaterialTheme.colorScheme.tertiary)
+            colors = IconButtonDefaults.iconButtonColors(contentColor = Color.White)
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back"
+                contentDescription = "Back",
+                modifier = Modifier.size(50.dp).border(3.dp, Blue40, CircleShape).background(
+                Blue40)
             )
         }
-        AsyncImage(
-            model=url,
-            contentDescription = "Manga banner",
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier
-                .layoutId("banner")
-                .fillMaxSize()
-                .padding(bottom = 200.dp),
-            alpha = 0.5F
-        )
 /*
         Image(
             painter = painterResource(id = R.drawable.solo_leveling_banner),
@@ -268,7 +273,7 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
             modifier = Modifier
                 .layoutId("bgCard")
-                .height(530.dp)
+                .height(520.dp)
                 .fillMaxWidth()
         ) {
             Box(
@@ -454,7 +459,7 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                 }
                 Row(modifier = Modifier
                     .layoutId("btnHeart")
-                    .padding(top = 32.dp, start = 320.dp, bottom = 8.dp, end = 16.dp),
+                    .padding(top = 20.dp, start = 200.dp, bottom = 8.dp, end = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween){
                     val context= LocalContext.current
                     IconButton(
@@ -473,20 +478,21 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                         },
                         colors = IconButtonDefaults.iconButtonColors(
                             contentColor = MaterialTheme.colorScheme.tertiaryContainer
-                        )
+                        ),
+                        modifier = Modifier.size(50.dp)
                     ) {
                         if (filledPlus == false) {
                             Icon(
                                 imageVector = Icons.Outlined.AddCircle,
                                 contentDescription = "Empty Plus",
-                                modifier = Modifier.size(30.dp),
+                                modifier = Modifier.size(60.dp),
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
                         } else {
                             Icon(
                                 imageVector = Icons.Filled.CheckCircle,
                                 contentDescription = "Filled Plus",
-                                modifier = Modifier.size(30.dp),
+                                modifier = Modifier.size(60.dp),
                                 tint = Green
                             )
                         }
@@ -507,20 +513,21 @@ fun MangaDetail(viewModel: AppViewModel, navController: NavController) {
                         },
                         colors = IconButtonDefaults.iconButtonColors(
                             contentColor = MaterialTheme.colorScheme.tertiaryContainer
-                        )
+                        ),
+                        modifier = Modifier.size(50.dp)
                     ) {
                         if (filledHeart == false) {
                             Icon(
                                 imageVector = Icons.Outlined.FavoriteBorder,
                                 contentDescription = "Empty Heart",
-                                modifier = Modifier.size(50.dp),
+                                modifier = Modifier.size(80.dp),
                                 tint = MaterialTheme.colorScheme.tertiaryContainer
                             )
                         } else {
                             Icon(
                                 imageVector = Icons.Outlined.Favorite,
                                 contentDescription = "Filled Heart",
-                                modifier = Modifier.size(50.dp),
+                                modifier = Modifier.size(80.dp),
                                 tint = MaterialTheme.colorScheme.tertiaryContainer
                             )
                         }
