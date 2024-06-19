@@ -76,7 +76,7 @@ fun Login(viewModel: AppViewModel, navController : NavController){
         Spacer(modifier = Modifier.height(36.dp))
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Text(
-                text = "Effettua il login",
+                text = "Log In to access",
                 fontFamily = fontFamily,
                 fontWeight = FontWeight.Normal,
                 fontSize = 24.sp,
@@ -177,7 +177,7 @@ fun Login(viewModel: AppViewModel, navController : NavController){
             ) {
                 Spacer(modifier = Modifier.height(42.dp))
                 Text(
-                    text = "Non hai un account?",
+                    text = "Don't have an account?",
                     color = Color.White,
                     fontSize = 14.sp,
                     fontFamily = fontFamily,
@@ -185,7 +185,7 @@ fun Login(viewModel: AppViewModel, navController : NavController){
                 )
                 Spacer(modifier = Modifier.width(4.dp)) // Aggiungi spazio tra i due testi
                 Text(
-                    text = "Registrati",
+                    text = "Sign Up",
                     color = Color.White,
                     fontSize = 16.sp,
                     fontFamily = fontFamily,
