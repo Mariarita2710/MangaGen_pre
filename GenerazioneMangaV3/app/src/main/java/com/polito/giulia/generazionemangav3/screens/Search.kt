@@ -31,6 +31,7 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -56,8 +57,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -474,7 +478,8 @@ fun DisplayIconList(viewModel: AppViewModel, searchText: String, navController: 
     filteredMangaList.forEach { manga ->
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth().clickable { viewModel.selectedManga=manga;
+                navController.navigate(Screen.MangaPage.route) },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -990,13 +995,15 @@ fun MangaListSearch(viewModel: AppViewModel, searchText: String, navController: 
 
     // Mostra solo i manga che corrispondono al testo di ricerca
     Column (verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.verticalScroll(rememberScrollState())
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
             .padding(bottom = 70.dp)){
 
         filteredMangaList.forEach { manga ->
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth().clickable { viewModel.selectedManga=manga;
+                        navController.navigate(Screen.MangaPage.route) },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -1006,6 +1013,7 @@ fun MangaListSearch(viewModel: AppViewModel, searchText: String, navController: 
                 sl.forEach { s ->
                     url = FindUrl(fileName = manga + " Cover.jpg")
                 }
+
                 Card(modifier = Modifier
                     .width(100.dp)
                     .height(130.dp),
@@ -1018,16 +1026,18 @@ fun MangaListSearch(viewModel: AppViewModel, searchText: String, navController: 
                         contentScale = ContentScale.Crop
                     )
                 }
-                Text(
-                    text = manga,
-                    textAlign = TextAlign.Left,
-                    fontFamily = fontFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp,
-                    color = Color.White
-                )
+                        Text(
+                            text = manga,
+                            textAlign = TextAlign.Start,
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 20.sp,
+                            color = Color.White
+                        )
+
             }
         }
 
     }
 }
+
