@@ -75,13 +75,13 @@ fun Login(viewModel: AppViewModel, navController : NavController){
         )
         Spacer(modifier = Modifier.height(36.dp))
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-            Text(
-                text = "Log In to access",
+            /*Text(
+                text = "Welcome!",
                 fontFamily = fontFamily,
                 fontWeight = FontWeight.Normal,
                 fontSize = 24.sp,
                 color = Color.White
-            )
+            )*/
         }
          val emailValue = remember { mutableStateOf(TextFieldValue()) }
          val passwordValue = remember { mutableStateOf(TextFieldValue()) }
